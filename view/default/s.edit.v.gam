@@ -1,0 +1,10 @@
+<fieldset>
+<legend>
+          edit
+</legend>
+<form name='editCat' action ='?do={table}' method='post' enctype='multipart/form-data'>
+<input type='hidden' name='wt' value='up' />
+{elements}
+<input type='hidden' name='id' value='{id}' />
+<input type='submit' value='edit entry' />
+</form>
