@@ -1,9 +1,0 @@
-<fieldset>
-<legend>
-          add
-</legend>
-<form name='addCat' action ='?do=test' method='post' enctype='multipart/form-data'>
-<input type='hidden' name='wt' value='ins' />
-{elements}
-<input type='submit' value='add new entry' />
-</form>
