@@ -3,7 +3,8 @@ include ('./control/control.php');
 class demo extends ctrl{
      function index()
           {
-               $html .="<p><u><center>this is the demo controller; you don't have controllers yet.<br /> please create one and change your default controller</u></p></center>";
+               $html .="<img src='./view/default/icon1.png' /><br />
+               <p><u><center>this is the demo controller; you don't have controllers yet.<br /> please create one and change your default controller</u></p></center>";
                $html .="<p><b>To start scaffolding:<br/>
                1- Edit <i>/configure/db.cnf.php</i> with your server connection data.<br />
                2- Edit  <i>/configure/control.cnf.php</i> change constant <i>SCAFF</i> value and to your real table name instead of the \"your_table_name\" value.<br />
@@ -14,6 +15,6 @@ class demo extends ctrl{
                after that click <a href=\"?do=s\">here</a>";
                
                return $html;
-          }
+          }//EO index
 }
 ?>
