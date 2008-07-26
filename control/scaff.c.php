@@ -19,9 +19,9 @@ touch("./view/default/a.{$this->table}.v.gam");
 touch("./view/default/{$this->table}.v.gam");
 touch("./view/default/add.{$this->table}.v.gam");
 touch("view/default/edit.{$this->table}.v.gam");
-               $qDescribeTable="describe {$this->table}";
-             //  echo $qDescribeTable;
-               $result=mysql_query($qDescribeTable);
+		$qDescribeTable="describe {$this->table}";
+		//echo $qDescribeTable;
+               $result=query($qDescribeTable);
                $verbose .="<table border=1>
                     <tr>
                     <th>Field</th>
