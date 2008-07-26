@@ -19,10 +19,8 @@ touch("./view/default/a.{$this->table}.v.gam");
 touch("./view/default/{$this->table}.v.gam");
 touch("./view/default/add.{$this->table}.v.gam");
 touch("view/default/edit.{$this->table}.v.gam");
-               mysql_connect("localhost","root","");
                $qDescribeTable="describe {$this->table}";
              //  echo $qDescribeTable;
-               mysql_select_db("scaf");
                $result=mysql_query($qDescribeTable);
                $verbose .="<table border=1>
                     <tr>
