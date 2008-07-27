@@ -2,7 +2,7 @@
 <legend>
           add
 </legend>
-<form name='addCat' action ='?do=test' method='post' enctype='multipart/form-data'>
+<form name='addCat' action ='?do=bigno&wt=ins' method='post' enctype='multipart/form-data'>
 <input type='hidden' name='wt' value='ins' />
 {elements}
 <input type='submit' value='add new entry' />
