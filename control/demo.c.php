@@ -3,7 +3,7 @@ include ('./control/control.php');
 class demo extends ctrl{
      function index()
           {
-               $html .="<img src='./view/default/icon1.png' /><br />
+               $html .="<img src='".RUN_PATH."/view/default/icon1.png' /><br />
                <p><u><center>this is the demo controller; you don't have controllers yet.<br /> please create one and change your default controller</u></p></center>";
                $html .="<p><b>To start scaffolding:<br/>
                1- Edit <i>/configure/db.cnf.php</i> with your server connection data.<br />
@@ -12,7 +12,7 @@ class demo extends ctrl{
                <i>yourtable.c.php in the /control directory</i><br />
                <i>yourtable.php in the /model directory</i></b>
                <sub>make sure that your server will have <font color=red>write</font> permission on them.</blink><br /><b>
-               after that click <a href=\"?do=s\">here</a>";
+               after that click <a href='".RUN_PATH."/s'>here</a>";
                
                return $html;
           }//EO index

@@ -3,14 +3,16 @@ function validate(){
 //empty all the http request variables
 //---
 $req= array();
-	foreach($_POST as $k=>$v){
-		$req[$k]=$v;
-	}
-	unset($_POST);
-	foreach($_GET as $k=>$v){
-		$req[$k]=$v;
-	}
-	unset($_GET);
+	  foreach($_GET as $k=>$v){
+			$req[$k]=$v;
+			unset($_REQUEST[$k]);
+	  }
+	  foreach($_POST as $k=>$v){
+			$req[$k]=$v;
+			unset($_REQUEST[$k]);
+	  }
+	  unset($_GET);
+	  unset($_POST);
 //---
 	if ( isset( $req ) ){
 			foreach($req as $k=>$v){

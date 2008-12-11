@@ -16,12 +16,11 @@ if(!isset($iWasThere))
 class ctrl{
      var $name;
      var $html;
-	function __construct($req)
-	     {
-		     include('shared/render.lib.php') ;
-		     include('shared/db.lib.php') ;
-		     $this->html=$this->index($req);
-          }//ctrl()end
+    function __construct($req){
+        include('shared/render.lib.php') ;
+        include('shared/db.lib.php') ;
+        $this->html=$this->index($req);
+}//ctrl()end
 /*****************************************
      @param    string $function case name
      @name     route_processor()
@@ -34,7 +33,7 @@ class ctrl{
 ******************************************/
      function route_processor($function)
           {
-	          $funPath="?do={this->$name}&wt=".$function;
+	          $funPath="/{this->$name}/$function";
 	          return $funPath;
           }
 /*****************************************

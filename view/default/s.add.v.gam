@@ -2,8 +2,7 @@
 <legend>
           add
 </legend>
-<form name='addCat' action ='?do={table}&wt=ins' method='post' enctype='multipart/form-data'>
-<input type='hidden' name='wt' value='ins' />
+<form name='add' action ='{RUN_PATH}/shouts/ins' method='post' enctype='multipart/form-data'>
 {elements}
 <input type='submit' value='add new entry' />
 </form>

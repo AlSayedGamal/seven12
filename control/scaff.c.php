@@ -41,8 +41,16 @@ touch("view/default/edit.{$this->table}.v.gam");
                          $fields_in_req[]="'{\$req['".$row['Field']."']}'";
                          $field=$row['Field'];
                          if($row['Type'] == "text"){
-                              $add.= "$field:<br /> <textarea name='{$row['Field']}'></textarea><br />\n";
-                              $edit.="$field:<br /> <textarea name='{$row['Field']}'>{{$row['Field']}}</textarea> <br />\n";
+                              $add.= "$field:<br /> <textarea id='{$row['Field']}'  name='{$row['Field']}'></textarea>
+							  <script language=\"javascript1.2\">
+								  generate_wysiwyg('{$row['Field']}');
+							  </script>
+<br />\n";
+                              $edit.="$field:<br /> <textarea id='{$row['Field']}'  name='{$row['Field']}'>{{$row['Field']}}</textarea></textarea>
+							  <script language=\"javascript1.2\">
+								  generate_wysiwyg('{$row['Field']}');
+							  </script>
+<br />\n";
                          }else{
                               $add.= "$field: <input type='text' name='{$row['Field']}' /><br />\n";
                               $edit.="$field: <input type='text' name='{$row['Field']}' value='{{$row['Field']}}' /><br />\n";
@@ -56,7 +64,7 @@ touch("view/default/edit.{$this->table}.v.gam");
                     }
                     $show="<table>\n\t<tr>\n\t<td>".implode("</td>\n\t\t<td>",$fields) ."\n\t\t</td>\n\t</tr>\n</table>";
                     //echo $show;
-                    $ashow="<table>\n\t<tr>\n\t<td>".implode("</td>\n\t\t<td>",$fields) ."\n\t\t</td>\n\t\t<td>\n\t\t\t<a href='?do={$this->table}&wt=ed&id={id}'>edit</a> -- <a href='javascript: confirm_rm({id},\"{$this->table}\")'>remove</a>\n\t\t</td>\n\t</tr>\n</table>";
+                    $ashow="<table>\n\t<tr>\n\t<td>".implode("</td>\n\t\t<td>",$fields) ."\n\t\t</td>\n\t\t<td>\n\t\t\t<a href='".RUN_PATH."/{$this->table}/ed/{id}'>edit</a> -- <a href='javascript: confirm_rm({id},\"{$this->table}\")'>remove</a>\n\t\t</td>\n\t</tr>\n</table>";
                     $arData['table']=$this->table;
                    
                     file_put_contents("view/default/a.{$this->table}.v.gam",$ashow); 
@@ -83,7 +91,7 @@ touch("view/default/edit.{$this->table}.v.gam");
                          $arData['insert_values']=implode(",",$fields_in_req);
                          file_put_contents("./model/{$this->table}.php",render('s.model',$arData));
                     }
-                    $html .= "<br />your are now ready to browse <a href='?do={$this->table}'>{$this->table}</a> ";
+                    $html .= "<br />your are now ready to browse <a href='".RUN_PATH."/{$this->table}'>{$this->table}</a> ";
                   
                return $html;
 	          }

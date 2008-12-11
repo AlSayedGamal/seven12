@@ -1,6 +1,11 @@
 <?php
 function start($mode){
-     global $iWasThere;
+	global $iWasThere;
+	require("shared/cleanurl.lib.php");
+	$clean = new CleanURL;
+	$clean->parseURL();
+	$clean->setRelative('relativeslash'); //relativeslash is variable name
+	$clean->setParts('do','wt','id');
 	require( 'configure/system.cnf.php' );
 	require( 'configure/db.cnf.php' );
 	require( 'configure/theme.cnf.php' );
