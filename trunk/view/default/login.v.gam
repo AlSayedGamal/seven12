@@ -1,0 +1,5 @@
+<form name='loginform' action='{RUN_PATH}/acp/auth' method='post'>
+	  <input  name='username' type='text' class='text' value='username' onclick="if(this.value==this.defaultValue){this.value=''}" />
+	  <input name='password' type='password' class='text' value='password' onclick="if(this.value==this.defaultValue){this.value=''}"/>
+	  <input  type='submit' value='login'/>
+</form>

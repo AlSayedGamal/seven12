@@ -1,0 +1,6 @@
+<item>
+			<title>{title}</title>
+			<description><![CDATA[{brief_content}]]></description>
+			<content:encoded><![CDATA[{content}]]></content:encoded>
+			<guid isPermaLink="true">{RUN_PATH}/news/full/{id}</guid>
+</item>

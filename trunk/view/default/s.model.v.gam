@@ -1,0 +1,34 @@
+<?php
+if(!isset($iWasThere))
+{
+	die("bang bang !");
+}
+require('model.php');
+class {table}_model extends model{
+     function sort_{table}()
+          {
+               $qSort="select * from `{table}`";
+               $this->result = $this->query($qSort);
+          }
+     function {table}($id)
+          {
+               $qGetById="select * from `{table}` where `id` =$id";
+               $this->result = $this->query($qGetById);
+          }
+     function add_{table}($req)
+          {
+               $qAdd="insert into `{table}` values (NULL,{insert_values})";
+               $this->result = $this->query($qAdd);               
+          }
+     function edit_{table}($req)
+          {    
+                    $qEdit{table}="update `{table}` set {updates}  where `id`={$req['id']}";
+                    $this->result = $this->query($qEdit{table});
+          }
+     function rm_{table}($id)
+          {
+               $qRm{table}="delete from {table} where id = $id ";
+               $this->result = $this->query($qRm{table});               
+          }     
+}
+?>

@@ -1,0 +1,47 @@
+body{
+	  width:100%;
+	  margin:0px;
+	  padding:0px;
+	  font-family:Tahoma,verdana;
+	  font-size:13px;
+	  color:white;
+	  background-image:url('http://scs.3mates.com/view/default/images/bg.png') repeat-x;
+}
+#header{
+	  height:50px;
+	  display:block;
+}
+#info{
+	  height:40px;
+}
+
+.footer{
+	  position:absolute;
+	  top:690px;
+	  right:100px;
+	  display:block;
+}
+.footer-txt{
+	  position:absolute;
+	  top:685px;
+	  right:512px;
+}
+a:visited,a:link{
+	  color:white;
+	  text-decoration:none;
+}
+a:hover{
+	  color:#AAAAAA;
+	  text-decoration:underline;
+}
+input.text{
+	  color:#99AA44;
+}
+#content{
+	  text-align:left;
+	  padding:10px;
+}
+.where{
+	  position:relative;
+	  bottom:150px;
+}
