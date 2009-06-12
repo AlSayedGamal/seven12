@@ -18,8 +18,9 @@ function render_var( $stringHTML, $param='no' )
 	  
 	  if( is_array( $param ) ){
 			$keys=array_keys( $param );
+			
 	  array_walk( $keys, 'add_curly' );
-	  $stringHTML = str_replace( $keys,array_values($param), $stringHTML );
+	  $stringHTML = str_ireplace( $keys,array_values($param), $stringHTML );
 	  }
 	  return $stringHTML;
 }
