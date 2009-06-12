@@ -1,0 +1,12 @@
+<form name='loginform' action='{RUN_PATH}/home/auth' method='post'>
+	  <input  name='username' type='text' class='text' value='username' onclick="if(this.value==this.defaultValue){this.value=''}" />
+	  <input name='password' type='password' class='text' value='password' onclick="if(this.value==this.defaultValue){this.value=''}"/>
+نوع المستخدم
+<select name='type'>
+	<option value=1> طبيب</option>
+	<option value=1> موظف</option>
+	<option value=1> مريض</option>
+
+</select>
+	  <input  type='submit' value='login'/>
+</form>

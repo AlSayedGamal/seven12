@@ -1,0 +1,8 @@
+<fieldset>
+<legend>
+          add
+</legend>
+<form name='add' action ='{RUN_PATH}/{table}/ins' method='post' enctype='multipart/form-data'>
+{elements}
+<input type='submit' value='add new entry' />
+</form>

@@ -1,0 +1,25 @@
+<rss version="2.0"
+	xmlns:atom="http://www.w3.org/2005/Atom" 
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:admin="http://webns.net/mvcb/"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+		
+	<channel>
+		<title>{SITE_NAME}</title>
+		<mode>On Line</mode>
+	<!--<atom:link href="http://depiak.catreloaded.net" rel="self" type="application/rss+xml" />-->
+		<description>Sunshine Computer Systems</description>
+		<link>http://scs-me.com</link>
+		<language>en-gb</language>
+		<pubDate>{pubDate}</pubDate>
+		<lastBuildDate>{now}</lastBuildDate>
+		<copyright>Copyright : (c) 3MaTeS, developement section</copyright>
+		<dc:creator>gamal@3mates.com</dc:creator>
+		<dc:generator>7-12 webframework by GaMaL : mail.gamal@gmail.com</dc:generator>
+		<image>
+			<title>SCS</title>
+			<url>{LINK}/logo.gif</url>
+			<link>http://www.scs-me.com</link>
+		</image>
+		<ttl>60</ttl>

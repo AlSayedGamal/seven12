@@ -1,0 +1,126 @@
+body{
+	background:#abcdef url('Sunset.jpg') repeat fixed;
+	font-family:Tahoma;
+}
+a.menu:hover{
+	font:12px verdana;
+	text-decoration:overline underline;
+	color:black;
+}
+a.menu:visited{
+	font:12px verdana;
+	text-decoration:blink;
+	color:blue;
+}
+a{
+	padding:5px 30px 5px 30px; 
+	font:9px verdana;
+	color:white;
+	text-decoration:none;
+}
+#page{
+	margin-top:50px;
+	background:#fedcba;
+	height:80%;
+	width:85%;
+	display:block;
+}
+#header{
+	background:#998877;
+	height:100px;
+	font:20px verdana;
+	font-weight:bold;
+	color:brown;
+	text-align:left;
+}
+#hmenu{
+	background:#aaaaaa;
+	height:30px;
+}
+#sitebody{
+	height:70%;
+	display:block;
+	background:blue;
+}
+#sidebar{
+	width:30%;
+	height:100%;
+	display:block;
+	float:left;
+	background:black;
+	color:white;
+}
+#content{
+	height:100%;
+	display:block;
+	float:right;
+	width:70%;
+	background:white;
+}
+#footer{
+	background:brown;
+	color:white;
+}
+.block{
+	color:white;
+	background:gray;
+	font:11px arial;
+	width:300px;
+	height:200px;
+	display:block;
+}
+.downside{
+	position:absolute;
+	top:100px;
+	left:100px;
+}
+.dairy{
+	color:red;
+	text-decoration:underline;
+}
+/* Start Navigation Bar*/
+#nv_br {
+	left: 0;
+	height:30px;
+	visibility:visible;
+	background: url(images/nv_br_bg_s.png) repeat-x;
+	font-size:93%;
+	line-height:normal;
+	z-index:2;
+	}    
+#nv_br ul {
+	list-style: none;
+	padding:0;
+	margin:0;
+}
+#nv_br li {
+	display:inline;
+	margin:0;
+	padding:0;
+}
+#nv_br a {
+	display:block;
+	float:left;
+	width:90px;
+	margin:0;
+/*	padding:6px 12px 4px 0px;*/
+	padding:8px;
+	color:#01416f;
+	text-decoration:none;
+	background:url(images/btn.jpg) top right no-repeat;
+}
+#nv_br a span {
+	display:block;
+	color:#666;
+}
+#nv_br a:hover {
+/*	padding:6px 11px 4px 0px;*/
+	padding:8px;
+	color:#C00;
+	background:url(images/btn.jpg) top right  no-repeat ;
+	background-position:0px -30px;
+}
+#nv_br a:hover span {
+	color:#C00;
+}
+/* End Nav Bar */
