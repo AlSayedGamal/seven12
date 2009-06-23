@@ -1,0 +1,49 @@
+<?php
+if(!isset($iWasThere))
+{
+	die("bang bang !");
+}
+
+Load()->model('Mysql');
+Load()->model('model');
+
+class {table}_model extends Model {
+	protected $table = '{table}';
+	
+	function __construct() {
+		$this->connection = MySQL::getInstance();
+	}
+
+     function sort_{table}() {
+		$query = $this->select()->from('{table}');              
+          $query->query($query->sql());       	
+     }
+    
+     function {table}($id) {
+     	$query = $this->select()->from('{table}')->where(array('id' => $id))->limit(1);         		
+         	$query->query($query->sql(), $query->getParameters());
+     }
+
+     function add_{table}($req) {
+	     //array("name" => $req['name'], ...)
+	     $fields = array(
+	     			{insert_values}
+	     		);	  
+    		$this->insert($fields);
+     }
+    
+     function edit_{table}($req) {	     
+	     //array("name" => $req['name'], ...)
+	     $updates = array(
+	     			{updates}
+	     		);	     
+    		$this->update($updates, $req['id']);
+     }
+    
+     function rm_{table}($id) {
+    		$this->delete(array('id' => $id));
+     }
+
+}
+
+?>

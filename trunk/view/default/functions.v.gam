@@ -1,7 +1,0 @@
-<div align=center>
-<a class='icon' border=0 href='{RUN_PATH}/reports'>Reports Management</a>
-<a class='icon' border=0 href='{RUN_PATH}/patients'>Patients Management</a>
-<a class='icon' border=0 href='{RUN_PATH}/dr'>Doctors Management</a>
-<a class='icon' border=0 href='{RUN_PATH}/employee'>Employees Management</a>
-<a class='icon' border=0 href='{RUN_PATH}/acp/out'><img src='{LINK}/view/default/images/out.png' border=0/></a>
-</div>

@@ -1,0 +1,3 @@
+RewriteEngine on
+RewriteRule ^index(\/.*)*$  /index.php
+#RewriteRule  ^index\/(.*)\/(.*)\/(.*) index.php?do=$1&wt=$2&id=$3

@@ -1,0 +1,37 @@
+<html>
+	<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>
+			ORIGIN-IBM
+		</title>
+			<link rel='stylesheet' href='{LINK}/view/default/home.css' type='text/css' />
+			<script>
+						var LINK = '{LINK}';
+			</script>
+			<script src='{LINK}/view/default/js.js'></script>
+			<script src='{LINK}/view/default/wysiwyg.js'></script>
+		<link rel="alternate" type="application/rss+xml" title="SCS - RSS" href="{RUN_PATH}/news/rss" />
+
+
+<script type="text/javascript" src="{LINK}/js/prototype.js"></script>
+
+	</head>
+	<body>
+		<center>
+		<div id='page'>
+			<div id='header'>
+				ORIGIN
+			</div>
+			<div id='sitebody'>
+					<div id="nv_br">
+						<ul>
+							<li><a href={RUN_PATH}>Home</a></li>
+						</ul>
+					</div>
+
+
+				<div id='content' style='text-align:left'>
+								{content}
+				</div>
+			</div>
+			<div id='footer'>

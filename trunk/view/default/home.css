@@ -26,12 +26,14 @@ a{
 	display:block;
 }
 #header{
-	background:#998877;
+	background:#1e90ff;
 	height:100px;
 	font:20px verdana;
 	font-weight:bold;
 	color:brown;
 	text-align:left;
+
+	padding: 20px;
 }
 #hmenu{
 	background:#aaaaaa;
@@ -54,7 +56,7 @@ a{
 	height:100%;
 	display:block;
 	float:right;
-	width:70%;
+	width:100%;
 	background:white;
 }
 #footer{
@@ -83,7 +85,7 @@ a{
 	left: 0;
 	height:30px;
 	visibility:visible;
-	background: url(images/nv_br_bg_s.png) repeat-x;
+	background: lightblue;
 	font-size:93%;
 	line-height:normal;
 	z-index:2;
@@ -107,7 +109,7 @@ a{
 	padding:8px;
 	color:#01416f;
 	text-decoration:none;
-	background:url(images/btn.jpg) top right no-repeat;
+	background:lightblue;
 }
 #nv_br a span {
 	display:block;
@@ -117,7 +119,7 @@ a{
 /*	padding:6px 11px 4px 0px;*/
 	padding:8px;
 	color:#C00;
-	background:url(images/btn.jpg) top right  no-repeat ;
+	background:#b5c0c4;
 	background-position:0px -30px;
 }
 #nv_br a:hover span {
