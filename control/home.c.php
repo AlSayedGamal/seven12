@@ -14,49 +14,61 @@
 if(!isset($iWasThere)){
 	  echo ("bang bang !");
 }
-require('control.php');
+
+Load()->control('control');
+
 class home extends ctrl{
-	  function index($req){
-			//echo $req['do'],$req['wt'],$req['id'],"<br/>";
-			$html.="<script>
+	function __construct($req) {
+		parent::__construct($req);
+		global $iWasThere;
+		$this->req = $req;
+		$this->name = 'home';
+
+		$this->html .= "<script>
 						var LINK = '".LINK."';
 			</script>";
-			$html.="<script src='".LINK."/view/default/js.js'></script>";
-			$html.="<script src='".LINK."/view/default/wysiwyg.js'></script>";
-			global $iWasThere;;
-			$wt=( $req['wt'] )?$req['wt']:"default";
-			switch($wt){
-				  case 'about':
-						$arData['content']=easy_render('about');
-						$html.=render('home',$arData);
-						break;
-				  case 'contact':
-						$arData['content']=easy_render('contact');
-						$html.=render('home',$arData);
-						break;
-			   	  case 'send':
-						include("shared/mailer.lib.php");
-						$message="<pre>
-								Message time: ".date('M d Js h:i:s')."
-								Sender: {$req['senderMail']}
-								Sender email: {$req['email']}
-								Sender Message:
-								".nl2br($req['msg'])."
-							</pre>";
-						ht_mail(WEB_ADMIN_MAIL,"Contact inquery",$message,'no-reply@scs-me.com',"contact-us form");
-						$thankYou.=$this->goto(RUN_PATH,easy_render('thankyou'));
-						$html.=render('home',array('content'=>$thankYou));
-				         	break;
-				  default:
-						$arData = array(
-						'content' => easy_render('usrlogin')
-						);
-						$html.=render('home',$arData);
-						break;
-			}
-			$html.=($this->is_admin())? easy_render('footer'):easy_render('usrftr');
-			return $html;
-	  }//EO index()
+		$this->html .= "<script src='".LINK."/view/default/js.js'></script>";
+		$this->html .= "<script src='".LINK."/view/default/wysiwyg.js'></script>";
 
-}//EO news
+	}
+
+
+	function about() {
+		$arData['content']=easy_render($this->name, 'about');
+		$this->html .= render($this->name, 'home',$arData);
+	}
+
+	function contact() {
+		$arData['content']=easy_render($this->name, 'contact');
+		$this->html .= render($this->name, 'home',$arData);
+	}
+
+	function send() {
+		include("shared/mailer.lib.php");
+		$message="<pre>
+				Message time: ".date('M d Js h:i:s')."
+				Sender: {$this->req['senderMail']}
+				Sender email: {$this->req['email']}
+				Sender Message:
+				".nl2br($this->req['msg'])."
+			</pre>";
+		ht_mail(WEB_ADMIN_MAIL,"Contact inquery",$message,'no-reply@scs-me.com',"contact-us form");
+		$thankYou.=$this->goto(RUN_PATH,easy_render('.', 'thankyou'));
+		$this->html .= render('.', 'home',array('content'=>$thankYou));
+	}
+
+	function _default() {
+		$arData = array(
+			'content' => easy_render('.', 'usrlogin')
+		);
+		$this->html .= render($this->name, 'home',$arData);
+	}
+
+
+
+	function __destruct() {
+		$this->html .= ($this->is_admin())? easy_render('.', 'footer') : easy_render('.', 'usrftr');
+	}
+
+}//EO home
 ?>
