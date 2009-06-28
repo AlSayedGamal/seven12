@@ -15,8 +15,9 @@ class {table}_model extends Model {
 	}
 
      function sort_{table}() {
-		$query = $this->select()->from('{table}');              
+		  $query = $this->select()->from('{table}');              
           $query->query($query->sql());       	
+		  return $this;
      }
     
      function {table}($id) {
