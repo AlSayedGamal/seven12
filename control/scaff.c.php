@@ -88,7 +88,7 @@ class scaff extends ctrl {
 	  }
 
 	  function add_to_set($row){
-		  return sprintf("'%s' => \$req['%s']", $row['Field'], $row['Field']);
+		  return sprintf("'`%s`' => \$req['%s']", $row['Field'], $row['Field']);
 	  }
 
 	  function add_to_req($row){
