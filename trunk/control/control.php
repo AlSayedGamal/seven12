@@ -97,7 +97,7 @@ class ctrl{
 	  * @return HTML needed to create the view
 	  */
 	 function admin_view($shrt,$title){
-		$miniOptions=easy_render(".", 'miniOptions');
+		$miniOptions=easy_render("acp", 'miniOptions');
 		return render(".", 'main', array(
 				'info' => "<sub><a style='padding:0px' href='".RUN_PATH."/acp'>Admin Control Panel</a> >> <a style='padding:0px' href='" . RUN_PATH . "/$shrt'>$title</a></sub><br />$miniOptions"
 			   ,'header'=>"<h1>Admin Control Panel</h1>"));
