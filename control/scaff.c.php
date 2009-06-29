@@ -118,7 +118,7 @@ class scaff extends ctrl {
 						<tr>
 							  <td>" . implode("</td>\n\t\t<td>", $fields) . "</td>
 							  <td style='text-align:right'>
-								  <a href='" . RUN_PATH . "/{$this->table}/ed/{id}'>
+								  <a href='{RUN_PATH}/{$this->table}/ed/{id}'>
 										edit
 								  </a> --
 								  <a href='javascript: confirm_rm({id},\"{$this->table}\")'>
@@ -142,7 +142,7 @@ class scaff extends ctrl {
 									generate_wysiwyg('{$row['Field']}');
 								</script>
 					  		<br />\n";
-					  $elements['edit'] .= "{$label}:<br />
+					  $elements['edit'] .= "<label for='{$row['Field']}'>{$label}:</label><br />
 					  		<textarea id='{$row['Field']}'  name='{$row['Field']}'>{{$row['Field']}}</textarea>
 								<script language=\"javascript1.2\">
 									generate_wysiwyg('{$row['Field']}');
