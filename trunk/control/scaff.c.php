@@ -31,17 +31,8 @@ class scaff extends ctrl {
      	$this->index();
      }
 
-     function index(){
-		  $dir = "view/default/" . $this->table;
-		  if (!is_dir($dir) && !mkdir($dir, 0777)) {
-		  	die("Coudn't create views directory: " . $this->table);
-		  }
-
-		  $this->html .= "Create Directory [<i>{$this->table}</i>] : <span style='color:green;font-family:verdana;font-weight:bold'>done</span><br />";
-
-		  $this->html .= $this->touch_view_files();
-
-          $qDescribeTable = "describe {$this->table}";
+     function index(){		  
+          $qDescribeTable  = "describe {$this->table}";
           $result 		  = query($qDescribeTable);
           while ($row = mysql_fetch_array($result,MYSQL_ASSOC)) {
 
@@ -62,30 +53,9 @@ class scaff extends ctrl {
 
           $this->html .= $this->write_controller_file();
 
-          $this->html .=  "your are now ready to browse <a href='".RUN_PATH."/{$this->table}'>{$this->table}</a> ";
+          $this->html .=  "your are now ready to browse <a href='" . RUN_PATH . "/{$this->table}'>{$this->table}</a> ";
 
 	 }
-
-
-      function touch_view_files(){
-       		$verbose = "";
-       		$views = array(
-       						"{$this->table}/a.{$this->table}.v.gam",
-       						"{$this->table}/{$this->table}.v.gam",
-       						"{$this->table}/add.{$this->table}.v.gam",
-       						"{$this->table}/edit.{$this->table}.v.gam"
-       					  );
-
-       		foreach($views as $view) {
-	       		if (touch("view/default/{$view}")) {
-					$verbose .= "Touch View File [<i>{$view}</i>] : <span style='color:green;font-family:verdana;font-weight:bold'>done</span><br />";
-				} else {
-					$verbose .= "Touch View File [<i>{$view}</i>] : <span style='color:red;font-family:verdana;font-weight:bold'>failed</b><br />";
-				}
-       		}
-
-			return $verbose;
-	  }
 
 	  function add_to_set($row){
 		  return sprintf("'`%s`' => \$req['%s']", $row['Field'], $row['Field']);
@@ -96,103 +66,115 @@ class scaff extends ctrl {
 	  }
 
 	  function create_user_show($fields){
-			foreach ($fields as &$v)
-			{
-				  $v = "{".$v."}";
-			}
-			$html = "<table>
-					 <tr>
-						  <td>" . implode("</td>\n\t\t<td>", $fields) . "</td>
-					 </tr>
-				    </table>";
-			return $html;
+		foreach ($fields as &$v)
+		{
+		  	$v = "{".$v."}";
+		}
+		$html = "<table>
+			 <tr>
+				  <td>" . implode("</td>\n\t\t<td>", $fields) . "</td>
+			 </tr>
+		    </table>";
+		return $html;
 	  }
 
 	  function create_admin_show($fields){
-			foreach ($fields as &$v)
-			{
-				  $v = "{".$v."}";
-			}
-			$html="
-				  <table style='width:100%'>
-						<tr>
-							  <td>" . implode("</td>\n\t\t<td>", $fields) . "</td>
-							  <td style='text-align:right'>
-								  <a href='{RUN_PATH}/{$this->table}/ed/{id}'>
-										edit
-								  </a> --
-								  <a href='javascript: confirm_rm({id},\"{$this->table}\")'>
-										remove
-								  </a>
-							  </td>
-						</tr>
-				  </table>";
-			return $html;
+		foreach ($fields as &$v)
+		{
+			  $v = "{".$v."}";
+		}
+		$html="
+			  <table style='width:100%'>
+				<tr>
+				  <td>" . implode("</td>\n\t\t<td>", $fields) . "</td>
+				  <td style='text-align:right'>
+					  <a href='{RUN_PATH}/{$this->table}/ed/{id}'>
+							edit
+					  </a> --
+					  <a href='javascript: confirm_rm({id},\"{$this->table}\")'>
+							remove
+					  </a>
+				  </td>
+				</tr>
+			  </table>";
+		return $html;
 	  }
 
 	  function check_type($row, &$elements){
 
-			$label = $this->cleanLabel($row['Field']);
+		$label = $this->cleanLabel($row['Field']);
 
-			switch($row['Type']){
-				  case 'text':
-					  $elements['add'] .= "<label for='{$row['Field']}'>{$label}:</label><br />
-					  		<textarea id='{$row['Field']}'  name='{$row['Field']}'></textarea>
-								<script language=\"javascript1.2\">
-									generate_wysiwyg('{$row['Field']}');
-								</script>
-					  		<br />\n";
-					  $elements['edit'] .= "<label for='{$row['Field']}'>{$label}:</label><br />
-					  		<textarea id='{$row['Field']}'  name='{$row['Field']}'>{{$row['Field']}}</textarea>
-								<script language=\"javascript1.2\">
-									generate_wysiwyg('{$row['Field']}');
-								</script>
-					  		<br />\n";
-					break;
-				  default:
-					  $elements['add']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='text' name='{$row['Field']}' /><br />\n";
-					  $elements['edit']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='text' name='{$row['Field']}' value='{{$row['Field']}}' /><br />\n";
-					break;
-			}
+		switch($row['Type']){
+			case 'text':
+			  $elements['add'] .= "<label for='{$row['Field']}'>{$label}:</label><br />
+			  		<textarea id='{$row['Field']}'  name='{$row['Field']}'></textarea>
+						<script language=\"javascript1.2\">
+							generate_wysiwyg('{$row['Field']}');
+						</script>
+			  		<br />\n";
+			  $elements['edit'] .= "{$label}:<br />
+			  		<textarea id='{$row['Field']}'  name='{$row['Field']}'>{{$row['Field']}}</textarea>
+						<script language=\"javascript1.2\">
+							generate_wysiwyg('{$row['Field']}');
+						</script>
+			  		<br />\n";
+			break;
+			default:
+				if ($row['Field'] === "password" or $row['Field'] === "passwd") {
+					$elements['add']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='password' name='{$row['Field']}' /><br />\n";
+				  	$elements['edit']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='password' name='{$row['Field']}' value='{{$row['Field']}}' /><br />\n";
+				} else if (strpos($row['Field'], "file") !== FALSE) {
+					$elements['add']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='file' name='{$row['Field']}' /><br />\n";
+				  	$elements['edit']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='file' name='{$row['Field']}' value='{{$row['Field']}}' /><br />\n";
+				} else {
+					$elements['add']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='text' name='{$row['Field']}' /><br />\n";
+					$elements['edit']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='text' name='{$row['Field']}' value='{{$row['Field']}}' /><br />\n";
+				}
+			break;
+				
+		}
 	  }
 
 	  function write_model_file($model_data){
-			$model = "./model/{$this->table}.php";
+		$model = "./model/{$this->table}.php";
+		chmod($model, 0646);
 
-			if(is_file($model) || touch($model))
-			{
-				  $arData['table'] 			= $this->table;
-				  $arData['updates'] 		= implode(", \n\t\t\t\t\t", $model_data['set']);
-				  $arData['insert_values']	= implode(", \n\t\t\t\t\t", $model_data['req']);
+		if(is_file($model) || touch($model))
+		{
+			  $arData['table'] 			= $this->table;
+			  $arData['updates'] 		= implode(", \n\t\t\t\t\t", $model_data['set']);
+			  $arData['insert_values']	= implode(", \n\t\t\t\t\t", $model_data['req']);
 
-				  if (file_put_contents($model, render($this->name, 's.model', $arData))) {
-				  	return $this->outMsg("Create Model", "done");
-				  }
+			  if (file_put_contents($model, render($this->name, 's.model', $arData))) {
+			  	return $this->outMsg("Create Model", "done");
+			  }
 
-			}
-			return $this->outMsg("Create Model", "failed");
+		}
+		return $this->outMsg("Create Model", "failed");
 
 
 	  }
 
 	  function write_controller_file(){
-			$arData['table']=$this->table;
-			$cntrl = "./control/{$this->table}.c.php";
-			$verbose = "";
+		$arData['table']=$this->table;
+		$cntrl = "./control/{$this->table}.c.php";
+		$verbose = "";
 
-			if(is_file($cntrl) || touch($cntrl))
-			{
-				  if (file_put_contents($cntrl, render($this->name, 's.controller', $arData))) {
-				  		$this->write_controller_link('acp/miniOptions');
-				  		$this->write_controller_link('acp/functions');
-				  		$verbose = $this->outMsg("Create Controller", "done");
-				  }
+		chmod($cntrl, 0646);
 
-			} else {
-				$verbose = $this->outMsg("Create Controller", "failed");
-			}
+		if(is_file($cntrl) || touch($cntrl))
+		{
+			  if (file_put_contents($cntrl, render($this->name, 's.controller', $arData))) {
+			  		$this->write_controller_link('acp/miniOptions');
+			  		$this->write_controller_link('acp/functions');
+			  		$verbose = $this->outMsg("Create Controller", "done");
+			  }
 
-			return $verbose;
+		} else {
+			$verbose = $this->outMsg("Create Controller", "failed");
+		}
+
+		return $verbose;
 	  }
 
 
@@ -209,17 +191,34 @@ class scaff extends ctrl {
 	  }
 
 	  function write_view_files($elements){
-			file_put_contents("view/default/{$this->table}/{$this->table}.v.gam", $elements['show']);
-			file_put_contents("view/default/{$this->table}/a.{$this->table}.v.gam", $elements['ashow']);
+	  	$dir = "view/default/" . $this->table;
+	  	if (!is_dir($dir) && !mkdir($dir, 0777)) {
+			die("Coudn't create views directory: " . $this->table);
+		}
+		$this->html .= $this->outMsg("Create Directory [<i>{$this->table}</i>]", "done");
+		
+	  	$views = array(
+					"view" => "view/default/{$this->table}/{$this->table}.v.gam",
+					"a" 	  => "view/default/{$this->table}/a.{$this->table}.v.gam",
+					"add"  => "view/default/{$this->table}/add.{$this->table}.v.gam",
+					"edit" => "view/default/{$this->table}/edit.{$this->table}.v.gam"
+  				);
+       				
+       	foreach ($views as $k => $v) {       		
+       		chmod($v, 0646);	
+       	}
+       		
+		file_put_contents($views['view'], $elements['show']);
+		file_put_contents($views['a'], $elements['ashow']);
 
-	        $arData=array('table' => $this->table
-	                     ,'elements' => $elements['add']);
+		$arData=array('table' => $this->table
+                     ,'elements' => $elements['add']);
 
-			file_put_contents("view/default/{$this->table}/add.{$this->table}.v.gam", open_and_render_var($this->name, 's.add',$arData));
-			$arData['elements'] = $elements['edit'];
-			file_put_contents("./view/default/{$this->table}/edit.{$this->table}.v.gam", open_and_render_var($this->name, 's.edit',$arData));
-
-			return "Write view files[ {$this->table}/a.{$this->table}.v.gam , {$this->table}/{$this->table}.v.gam , {$this->table}/add.{$this->table}.v.gam and {$this->table}/edit.{$this->table}.v.gam  ]: <span style='color:green;font-family:verdana;font-weight:bold'>done</span><br />";
+		file_put_contents($views['add'], open_and_render_var($this->name, 's.add',$arData));
+		$arData['elements'] = $elements['edit'];
+		file_put_contents($views['edit'], open_and_render_var($this->name, 's.edit',$arData));
+		$msg = "Write view files[ {$this->table}/<strong>{</strong>a.{$this->table}.v.gam,{$this->table}.v.gam,add.{$this->table}.v.gam,edit.{$this->table}.v.gam<strong>}</strong> ]";
+		return $this->outMsg($msg, "done");
 	  }
 
 
