@@ -13,6 +13,7 @@ Load()->control('control');
 
 class scaff extends ctrl {
     private $table;
+    private $enctype = "";
 
 	function __construct($req) {
      	parent::__construct($req);
@@ -24,15 +25,15 @@ class scaff extends ctrl {
      	}
      	$this->table = $this->req['wt'];
 
-     	if (SCAFF != $this->table) {
-	     	exit("CAN't scaff");
-     	}
+     	#if (SCAFF != $this->table) {
+	    # 	exit("CAN't scaff");
+     	#}
 
      	$this->index();
      }
 
-     function index(){		  
-          $qDescribeTable  = "describe {$this->table}";
+     function index(){
+		$qDescribeTable = "describe {$this->table}";
           $result 		  = query($qDescribeTable);
           while ($row = mysql_fetch_array($result,MYSQL_ASSOC)) {
 
@@ -66,38 +67,38 @@ class scaff extends ctrl {
 	  }
 
 	  function create_user_show($fields){
-		foreach ($fields as &$v)
-		{
-		  	$v = "{".$v."}";
-		}
-		$html = "<table>
-			 <tr>
-				  <td>" . implode("</td>\n\t\t<td>", $fields) . "</td>
-			 </tr>
-		    </table>";
-		return $html;
+			foreach ($fields as &$v)
+			{
+				  $v = "{".$v."}";
+			}
+			$html = "<table>
+					 <tr>
+						  <td>" . implode("</td>\n\t\t<td>", $fields) . "</td>
+					 </tr>
+				    </table>";
+			return $html;
 	  }
 
 	  function create_admin_show($fields){
-		foreach ($fields as &$v)
-		{
-			  $v = "{".$v."}";
-		}
-		$html="
-			  <table style='width:100%'>
-				<tr>
-				  <td>" . implode("</td>\n\t\t<td>", $fields) . "</td>
-				  <td style='text-align:right'>
-					  <a href='{RUN_PATH}/{$this->table}/ed/{id}'>
-							edit
-					  </a> --
-					  <a href='javascript: confirm_rm({id},\"{$this->table}\")'>
-							remove
-					  </a>
-				  </td>
-				</tr>
-			  </table>";
-		return $html;
+			foreach ($fields as &$v)
+			{
+				  $v = "{".$v."}";
+			}
+			$html="
+				  <table style='width:100%'>
+						<tr>
+							  <td>" . implode("</td>\n\t\t<td>", $fields) . "</td>
+							  <td style='text-align:right'>
+								  <a href='{RUN_PATH}/{$this->table}/ed/{id}'>
+										edit
+								  </a> --
+								  <a href='javascript: confirm_rm({id},\"{$this->table}\")'>
+										remove
+								  </a>
+							  </td>
+						</tr>
+				  </table>";
+			return $html;
 	  }
 
 	  function check_type($row, &$elements){
@@ -126,6 +127,7 @@ class scaff extends ctrl {
 				} else if (strpos($row['Field'], "file") !== FALSE) {
 					$elements['add']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='file' name='{$row['Field']}' /><br />\n";
 				  	$elements['edit']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='file' name='{$row['Field']}' value='{{$row['Field']}}' /><br />\n";
+				  	$this->enctype = "enctype='multipart/form-data'";
 				} else {
 					$elements['add']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='text' name='{$row['Field']}' /><br />\n";
 					$elements['edit']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='text' name='{$row['Field']}' value='{{$row['Field']}}' /><br />\n";
@@ -136,45 +138,45 @@ class scaff extends ctrl {
 	  }
 
 	  function write_model_file($model_data){
-		$model = "./model/{$this->table}.php";
-		chmod($model, 0646);
+			$model = "./model/{$this->table}.php";
+			chmod($model, 0646);
+			
+			if(is_file($model) || touch($model))
+			{
+				  $arData['table'] 			= $this->table;
+				  $arData['updates'] 		= implode(", \n\t\t\t\t\t", $model_data['set']);
+				  $arData['insert_values']	= implode(", \n\t\t\t\t\t", $model_data['req']);
 
-		if(is_file($model) || touch($model))
-		{
-			  $arData['table'] 			= $this->table;
-			  $arData['updates'] 		= implode(", \n\t\t\t\t\t", $model_data['set']);
-			  $arData['insert_values']	= implode(", \n\t\t\t\t\t", $model_data['req']);
+				  if (file_put_contents($model, render($this->name, 's.model', $arData))) {
+				  	return $this->outMsg("Create Model", "done");
+				  }
 
-			  if (file_put_contents($model, render($this->name, 's.model', $arData))) {
-			  	return $this->outMsg("Create Model", "done");
-			  }
-
-		}
-		return $this->outMsg("Create Model", "failed");
+			}
+			return $this->outMsg("Create Model", "failed");
 
 
 	  }
 
 	  function write_controller_file(){
-		$arData['table']=$this->table;
-		$cntrl = "./control/{$this->table}.c.php";
-		$verbose = "";
+			$arData['table']=$this->table;
+			$cntrl = "./control/{$this->table}.c.php";
+			$verbose = "";
 
-		chmod($cntrl, 0646);
+			chmod($cntrl, 0646);
 
-		if(is_file($cntrl) || touch($cntrl))
-		{
-			  if (file_put_contents($cntrl, render($this->name, 's.controller', $arData))) {
-			  		$this->write_controller_link('acp/miniOptions');
-			  		$this->write_controller_link('acp/functions');
-			  		$verbose = $this->outMsg("Create Controller", "done");
-			  }
+			if(is_file($cntrl) || touch($cntrl))
+			{
+				  if (file_put_contents($cntrl, render($this->name, 's.controller', $arData))) {
+				  		$this->write_controller_link('acp/miniOptions');
+				  		$this->write_controller_link('acp/functions');
+				  		$verbose = $this->outMsg("Create Controller", "done");
+				  }
 
-		} else {
-			$verbose = $this->outMsg("Create Controller", "failed");
-		}
+			} else {
+				$verbose = $this->outMsg("Create Controller", "failed");
+			}
 
-		return $verbose;
+			return $verbose;
 	  }
 
 
@@ -211,8 +213,9 @@ class scaff extends ctrl {
 		file_put_contents($views['view'], $elements['show']);
 		file_put_contents($views['a'], $elements['ashow']);
 
-		$arData=array('table' => $this->table
-                     ,'elements' => $elements['add']);
+		$arData = array('table' => $this->table
+		                ,'elements' => $elements['add']
+		                ,'enctype' => $this->enctype);
 
 		file_put_contents($views['add'], open_and_render_var($this->name, 's.add',$arData));
 		$arData['elements'] = $elements['edit'];
@@ -232,7 +235,7 @@ class scaff extends ctrl {
 		  } else if ($type === "fail" || $type === "failed") {
 			  $color = "red";
 		  }
-		  $out  = $msg . ": ";
+		  $out  = $msg . " : ";
 		  $out .= "<span style='color:" . $color . ";font-family:verdana;font-weight:bold'>" . ucfirst($type) . "</span><br />";
 		  return $out;
 	  }
