@@ -23,24 +23,8 @@ class acp extends ctrl{
 		$this->name = 'acp';
 	}
 
-	function auth() {
-		if($this->req['username'] == "admin" && $this->req['password'] == "3mates"){
-			  $_SESSION['admin'] = 1;
-			  $this->html 		.= $this->goto(RUN_PATH . "/acp","welcome back", 0);
-		}else{
-			  $this->html .= $this->goto(RUN_PATH . "/acp","wrong log in information,try again...");
-		}
-	}
-
-	function out() {
-		if($_SESSION['admin']){
-			  $_SESSION['admin'] = 0;
-			  $this->html 		.= $this->goto(RUN_PATH . "/acp","You have been logged out");
-		}
-	}
-
 	function _default() {
-		if($_SESSION['admin'] == 1) {
+		if ($this->is_admin()) {
 			$adminView['header']  = "<h1>Admin Control Panel</h1>";
 			$adminView['content'] = easy_render($this->name, 'functions');
 			$adminView['info']    = "<a href='" . RUN_PATH . "/acp'>Admin Control Panel</a>";
@@ -50,6 +34,22 @@ class acp extends ctrl{
 			$gstView['info']    = "Authentication Required";
 			$gstView['header']  = "<h1>Admin Control Panel</h1>";
 			$this->html 	   .= render($this->name, 'acp', $gstView);
+		}
+	}
+	
+	function auth() {
+		if($this->req['username'] == "admin" && $this->req['password'] == "3mates"){
+			  $_SESSION['admin'] = 1;
+			  $this->html 		.= $this->goto(RUN_PATH . "/acp", "Successful Login ..", 0);
+		}else{
+			  $this->html .= $this->goto(RUN_PATH . "/acp", "WRONG log in information,try again...");
+		}
+	}
+
+	function out() {
+		if ($this->is_admin()) {
+			  unset($_SESSION['admin']);
+			  $this->html	.= $this->goto(RUN_PATH . "/acp", "You have been logged out");
 		}
 	}
 

@@ -35,7 +35,7 @@ class scaff extends ctrl {
      function index(){
 		$qDescribeTable = "describe {$this->table}";
           $result 		  = query($qDescribeTable);
-          while ($row = mysql_fetch_array($result,MYSQL_ASSOC)) {
+          while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 	          if($row['Key'] != "PRI"){
 		            $fields_in_set[] = $this->add_to_set($row);
