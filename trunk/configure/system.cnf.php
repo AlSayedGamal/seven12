@@ -1,12 +1,18 @@
 <?php
-define( 'UPLOAD_PATH',$_SERVER['DOCUMENT_ROOT'].'/uploads/');
+
+// System wide paths
 //define( 'SYS_PATH',str_replace('index.php','',$_SERVER['SCRIPT_FILENAME']));
-define( 'INSTALL_PATH',str_replace('index.php','',$_SERVER['SCRIPT_FILENAME']));
-define( 'RUN_PATH',"http://".$_SERVER['SERVER_NAME'].str_replace('index.php','index',$_SERVER['SCRIPT_NAME']));
-define( 'LINK',str_replace('/index','',RUN_PATH));
-define( 'SITE_NAME',"SCS | Middle East" );
-define( 'AUTHUR',"El-Sayed G. AbdulAzem" );
-define( 'VERSION',"0.1");
-define( 'P_ADMIN',1);
-define('WEB_ADMIN_MAIL',"mail.gamal@gmail.com");
+define( 'UPLOAD_PATH' , $_SERVER['DOCUMENT_ROOT'] . '/uploads/' );
+define( 'INSTALL_PATH',str_replace('index.php','',$_SERVER['SCRIPT_FILENAME']) );
+define( 'RUN_PATH'	  , "http://" . $_SERVER['SERVER_NAME'] . str_replace('index.php', 'index', $_SERVER['SCRIPT_NAME']) );
+define( 'LINK' 	  , str_replace('/index', '', RUN_PATH) );
+
+// site-specific information
+define( 'SITE_NAME' 	, "Seven12" );
+define( 'VERSION'		, "0.1" );
+define( 'AUTHUR'		, "El-Sayed G. AbdulAzem" );
+define( 'WEB_ADMIN_MAIL'	, "mail.gamal@gmail.com");
+
+define( 'P_ADMIN'		, 1 );
+define( 'P_USER'		, 2 )
 ?>

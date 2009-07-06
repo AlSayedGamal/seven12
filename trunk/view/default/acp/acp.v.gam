@@ -2,14 +2,14 @@
 	  <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 			<title>
-				  Seven12 | Admin Control Panel
+				 {SITE_NAME} | Admin Control Panel
 			</title>
-			<link rel='stylesheet' href='{LINK}/view/default/acp.css' type='text/css' />
+			<link rel='stylesheet' href='{LINK}/view/default/styles/acp.css' type='text/css' />
 			<script>
 						var LINK = '{LINK}';
 			</script>
-			<script src='{LINK}/view/default/js.js'></script>
-			<script src='{LINK}/view/default/wysiwyg.js'></script>
+			<script src='{LINK}/view/default/scripts/js.js'></script>
+			<script src='{LINK}/view/default/scripts/wysiwyg.js'></script>
 	  </head>
 	  <body style="background: url('{LINK}/view/default/images/bg.png') repeat-x;" >
 			<center>

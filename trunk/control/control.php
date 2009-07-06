@@ -14,8 +14,8 @@ if(!isset($iWasThere))
      @author   AlSayed Gamal <mail.gamal@gmail.com> <http://www.egamal.com>
 ******************************************/
 
-Load()->lib('render') ;
-Load()->lib('db') ;
+Load()->lib('render');
+Load()->lib('db');
 
 class ctrl{
     private $name = "";
@@ -85,7 +85,7 @@ class ctrl{
 	}
 
 	function is_admin() {
-		if($_SESSION['admin']==P_ADMIN){
+		if($_SESSION['admin'] == P_ADMIN){
 			  return true;
 		}
 		return false;
@@ -96,11 +96,14 @@ class ctrl{
 	  * @param $shrt: Title to be added to control panel
 	  * @return HTML needed to create the view
 	  */
-	 function admin_view($shrt,$title){
-		$miniOptions=easy_render("acp", 'miniOptions');
-		return render(".", 'main', array(
-				'info' => "<sub><a style='padding:0px' href='".RUN_PATH."/acp'>Admin Control Panel</a> >> <a style='padding:0px' href='" . RUN_PATH . "/$shrt'>$title</a></sub><br />$miniOptions"
-			   ,'header'=>"<h1>Admin Control Panel</h1>"));
+	 function admin_view($shrt, $title){
+		$miniOptions = easy_render("acp", 'miniOptions');
+		$arData = array(
+				'info' => "<sub><a style='padding:0px' href='" . RUN_PATH . "/acp'>Admin Control Panel</a> >> <a style='padding:0px' href='" . RUN_PATH . "/$shrt'>$title</a></sub><br />$miniOptions"
+			   	,'header'=>"<h1>Admin Control Panel</h1>"
+			   	);
+		$header = render("acp", 'main', $arData);
+		return $header;
 	 }
 
 }//class end

@@ -27,12 +27,18 @@ class home extends ctrl{
 		$this->html .= "<script>
 						var LINK = '".LINK."';
 			</script>";
-		$this->html .= "<script src='".LINK."/view/default/js.js'></script>";
-		$this->html .= "<script src='".LINK."/view/default/wysiwyg.js'></script>";
+		$this->html .= "<script src='".LINK."/view/default/scripts/js.js'></script>";
+		$this->html .= "<script src='".LINK."/view/default/scripts/wysiwyg.js'></script>";
 
 	}
 
-
+	function _default() {
+		$arData = array(
+			'content' => easy_render('.', 'usrlogin')
+		);
+		$this->html .= render($this->name, 'home', $arData);
+	}
+	
 	function about() {
 		$arData['content']=easy_render($this->name, 'about');
 		$this->html .= render($this->name, 'home',$arData);
@@ -52,19 +58,11 @@ class home extends ctrl{
 				Sender Message:
 				".nl2br($this->req['msg'])."
 			</pre>";
+			
 		ht_mail(WEB_ADMIN_MAIL,"Contact inquery",$message,'no-reply@scs-me.com',"contact-us form");
 		$thankYou.=$this->goto(RUN_PATH,easy_render('.', 'thankyou'));
 		$this->html .= render('.', 'home',array('content'=>$thankYou));
 	}
-
-	function _default() {
-		$arData = array(
-			'content' => easy_render('.', 'usrlogin')
-		);
-		$this->html .= render($this->name, 'home',$arData);
-	}
-
-
 
 	function __destruct() {
 		$this->html .= ($this->is_admin())? easy_render('.', 'footer') : easy_render('.', 'usrftr');
