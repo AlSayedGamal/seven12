@@ -154,10 +154,6 @@ class {table} extends ctrl{
 			 $this->html .= $this->goto(RUN_PATH."/acp","ACCESS DENIED !");
 		}
 	}
-	
-	function __destruct() {
-		$this->html .= easy_render('footer');
-	}
 	  
 }//EO {table}
 ?>

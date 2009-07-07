@@ -5,6 +5,7 @@ if(!$iWasThere)
      }
 
 Load()->lib('Exception');
+Load()->model('Mysql');
 
 class Model {
 
@@ -24,8 +25,8 @@ class Model {
 
      public $lastInsertID;
 
-     private function __construct($connection) {
-		$this->connection = $connection;
+     function __construct() {
+		$this->connection = MySQL::getInstance();
      }
 
 	function query($q, $binds = array()) {

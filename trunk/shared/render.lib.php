@@ -2,32 +2,28 @@
 function add_curly( &$key ){
 	  $key = '{'.$key.'}';
 }
+
 function render( $name, $key, $param = 'no' ){
 	  $out = easy_render($name, $key);
 	  $out = render_var( $out, $param );
+	  
 	  return $out;
 }
-function easy_render( $name = '.', $key ){
-//		echo  INSTALL_PATH.'/view/'.THEME.'/'."$key".'.v.gam' ; // trace view files
-	if ($name == ".") {
-		$name = "";
-	} else {
-		$name = $name . '/';
-	}
 
+function easy_render( $name, $key ){
+//		echo  INSTALL_PATH.'/view/'.THEME.'/'."$key".'.v.gam' ; // trace view files
+	  $name = ($name == ".") ? "" : $name . '/';
+	  
 	  $stringHTML = file_get_contents( INSTALL_PATH.'/view/'.THEME.'/'. $name . "$key".'.v.gam' );
-	  $stringHTML=basic_render($stringHTML);
+	  $stringHTML = basic_render($stringHTML);
+	  
 	  return $stringHTML;
 }
 
-function open_and_render_var( $name = '.', $key, $param = 'no' ) {
-	if ($name == ".") {
-		$name = "";
-	} else {
-		$name = $name . '/';
-	}
+function open_and_render_var( $name, $key, $param = 'no' ) {
+	  $name = ($name == ".") ? "" : $name . '/';	
 
-	  $stringHTML = file_get_contents( INSTALL_PATH . '/view/' . THEME . '/' . $name . "$key" . '.v.gam' );
+	  $stringHTML = file_get_contents( INSTALL_PATH . '/view/' . THEME . '/' . $name . $key . '.v.gam' );
 	  $stringHTML = render_var($stringHTML, $param);
 
 	  return $stringHTML;

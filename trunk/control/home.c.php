@@ -64,7 +64,7 @@ class home extends ctrl{
 		$this->html .= render('.', 'home',array('content'=>$thankYou));
 	}
 
-	function __destruct() {
+	function footer() {
 		$this->html .= ($this->is_admin())? easy_render('.', 'footer') : easy_render('.', 'usrftr');
 	}
 
