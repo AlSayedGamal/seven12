@@ -15,9 +15,8 @@ if(!isset($iWasThere))
 ******************************************/
 
 Load()->lib('render');
-Load()->lib('db');
 
-class ctrl{
+class ctrl {
     private $name = "";
     private $html = "";
     private $message = "";
@@ -57,7 +56,7 @@ class ctrl{
 
 ///////////////////////////////////////////////////
 	function goto($path,$msg="redirecting",$seconds=2) {
-		if ($seconds == 0) {
+		if ($seconds === 0) {
 			header("Location: " . $path);
 		}
 
@@ -104,6 +103,10 @@ class ctrl{
 			   	);
 		$header = render("acp", 'main', $arData);
 		return $header;
+	 }
+	 
+	 function footer() {
+	 	return ($this->is_admin()) ? easy_render('.', 'footer') : easy_render('.', 'usrftr');
 	 }
 
 }//class end

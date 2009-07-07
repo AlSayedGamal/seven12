@@ -39,7 +39,7 @@ class acp extends ctrl{
 	
 	function auth() {
 		if($this->req['username'] == "admin" && $this->req['password'] == "3mates"){
-			  $_SESSION['admin'] = 1;
+			  $_SESSION['admin'] = P_ADMIN;
 			  $this->html 		.= $this->goto(RUN_PATH . "/acp", "Successful Login ..", 0);
 		}else{
 			  $this->html .= $this->goto(RUN_PATH . "/acp", "WRONG log in information,try again...");
@@ -49,7 +49,7 @@ class acp extends ctrl{
 	function out() {
 		if ($this->is_admin()) {
 			  unset($_SESSION['admin']);
-			  $this->html	.= $this->goto(RUN_PATH . "/acp", "You have been logged out");
+			  $this->html .= $this->goto(RUN_PATH . "/acp", "You have been logged out");
 		}
 	}
 
