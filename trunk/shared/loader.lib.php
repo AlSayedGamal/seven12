@@ -87,6 +87,10 @@ class Loader {
 
 		}
 	}
+	
+	function from($path) { // ()->file()
+		
+	}
 
 }
 ?>

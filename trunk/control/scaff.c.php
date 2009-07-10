@@ -25,7 +25,7 @@ class scaff extends ctrl {
      	if (!$req['wt']) {
      		exit("ERROR: no controller: " + $req['wt']);
      	}
-     	
+
      	$this->table = $this->req['wt'];
 /*
      	if (SCAFF != $this->table) {
@@ -37,7 +37,7 @@ class scaff extends ctrl {
 
      function index(){
      	Load()->lib('db');
-       
+
           $qDescribeTable = "describe {$this->table}";
           $result 		  = query($qDescribeTable);
 	     while ($row = mysql_fetch_array($result,MYSQL_ASSOC)) {
@@ -53,6 +53,7 @@ class scaff extends ctrl {
 
           $elements['show']	= $this->create_user_show($fields);
           $elements['ashow']	= $this->create_admin_show($fields);
+          $elements['miniAShow'] = $this->create_mini_show($fields);
 
           $this->html .= $this->write_view_files($elements);
 
@@ -84,12 +85,26 @@ class scaff extends ctrl {
 		return $html;
 	}
 
+	// will be written to a.{table}.all.v.gam : table with header
+	function create_mini_show($fields) {
+		foreach ($fields as &$v)	{
+			  $v = ucfirst($v);
+		}
+		$html = "<table style='width:100%'>
+				 <tr style='text-align:left'>
+					  <th>" . implode("</th>\n\t\t<th>", $fields) . "</th>
+					  <th style='text-align:right'>Action</th>
+				 </tr>
+				 {data}
+			    </table>";
+		return $html;
+	}
+
 	function create_admin_show($fields){
 		foreach ($fields as &$v)	{
 			  $v = "{".$v."}";
 		}
 		$html="
-			  <table style='width:100%'>
 				<tr>
 				  <td>" . implode("</td>\n\t\t<td>", $fields) . "</td>
 				  <td style='text-align:right'>
@@ -100,8 +115,7 @@ class scaff extends ctrl {
 							remove
 					  </a>
 				  </td>
-				</tr>
-			  </table>";
+				</tr>";
 		return $html;
   	}
 
@@ -137,13 +151,13 @@ class scaff extends ctrl {
 					$elements['edit']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='text' name='{$row['Field']}' value='{{$row['Field']}}' /><br />\n";
 				}
 			break;
-				
+
 		}
 	}
 
 	function write_model_file($model_data){
 		$model = "./model/{$this->table}.php";
-		
+
 		if(is_file($model) || touch($model))
 		{
 			  $arData['table'] 			= $this->table;
@@ -156,9 +170,9 @@ class scaff extends ctrl {
 			  }
 
 		}
-		
+
 		chmod($model, 0646);
-		
+
 		return $this->outMsg("Create Model", "failed");
 	}
 
@@ -185,7 +199,7 @@ class scaff extends ctrl {
 
 	function write_controller_link($file) {
 	  	$optionsFile = INSTALL_PATH . 'view/' . THEME . '/' . $file . '.v.gam';
-	  	
+
 	  	try {
 		  	if (!is_writeable($optionsFile)) {
 		  		throw new Seven12_Exception("Can NOT write to : " . $optionsFile);
@@ -193,7 +207,7 @@ class scaff extends ctrl {
 		} catch (Exception $e) {
 			echo $e->getError();
 		}
-		
+
   		$stringHTML = file( $optionsFile );
   		$link = sprintf("<a class='icon' border=0 href='{RUN_PATH}/%s'>%s</a> | \n", $this->table, ucfirst($this->table));
   		if (!stristr(implode(' ', $stringHTML), $this->table)) {
@@ -210,16 +224,18 @@ class scaff extends ctrl {
 			die("Coudn't create views directory: " . $this->table);
 		}
 		$this->html .= $this->outMsg("Create Directory [<i>{$this->table}</i>]", "done");
-		
+
 	  	$views = array(
 					"view" => "view/default/{$this->table}/{$this->table}.v.gam",
 					"a" 	  => "view/default/{$this->table}/a.{$this->table}.v.gam",
+					"miniA"=> "view/default/{$this->table}/a.{$this->table}.all.v.gam",
 					"add"  => "view/default/{$this->table}/add.{$this->table}.v.gam",
 					"edit" => "view/default/{$this->table}/edit.{$this->table}.v.gam"
   				);
-       		
+
 		file_put_contents($views['view'], $elements['show']);
 		file_put_contents($views['a'], $elements['ashow']);
+		file_put_contents($views['miniA'], $elements['miniAShow']);
 
 		$arData = array('table' => $this->table
 		                ,'elements' => $elements['add']
@@ -228,11 +244,11 @@ class scaff extends ctrl {
 		file_put_contents($views['add'], open_and_render_var($this->name, 's.add',$arData));
 		$arData['elements'] = $elements['edit'];
 		file_put_contents($views['edit'], open_and_render_var($this->name, 's.edit',$arData));
-		
-		foreach ($views as $k => $v) {       		
-       		chmod($v, 0646);	
+
+		foreach ($views as $k => $v) {
+       		chmod($v, 0646);
        	}
-       	
+
 		$msg = "Write view files[ {$this->table}/<strong>{</strong>a.{$this->table}.v.gam,{$this->table}.v.gam,add.{$this->table}.v.gam,edit.{$this->table}.v.gam<strong>}</strong> ]";
 		return $this->outMsg($msg, "done");
 	}

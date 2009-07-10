@@ -17,13 +17,13 @@ class {table}_model extends Model {
      function sort_{table}() {
 		$query = $this->select()->from('{table}');              
           $this->query($query->sql());       	
-		return $this;
+		return $this->fetch();
      }
     
      function {table}($id) {
      	$query = $this->select()->from('{table}')->where(array($this->primaryKey => $id))->limit(1);         		
          	$this->query($query->sql(), $query->getParameters());
-         	return $this;
+         	return $this->fetch();
      }
 
      function add_{table}($req) {
@@ -32,6 +32,7 @@ class {table}_model extends Model {
 	     			{insert_values}
 	     		);	  
     		$this->insert($fields);
+    		return true;
      }
     
      function edit_{table}($req) {	     
@@ -40,10 +41,12 @@ class {table}_model extends Model {
 	     			{updates}
 	     		);	     
     		$this->update($updates, $req['id']);
+    		return true;
      }
     
      function rm_{table}($id) {
     		$this->delete(array('id' => $id));
+    		return true;
      }
 
 }

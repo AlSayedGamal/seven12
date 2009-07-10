@@ -21,22 +21,22 @@ Load()->model('{table}');
 
 class {table} extends ctrl{
 	private ${table};
-	
+
 	function __construct($req) {
 		$this->{table}  = new {table}_model;
 		$this->name	 = '{table}';
 		$this->req 	 = $req;
-	}	
-	
+	}
+
 	function _default() {
 		if ($this->is_admin()) { // Is Admin?
 			 $this->html = $this->admin_view("{table}","{table} Management");
-			 
+
 			 $this->{table}->sort_{table}();
 			 ${table} = $this->{table}->fetch();
-			 
+
 			 ${table}View = easy_render($this->name, 'a.{table}');
-			 
+
 			 if(count(${table})){
 			 	foreach (${table} as $row) {
 			    		${table}sView .= render_var(${table}View, $row);
@@ -44,127 +44,137 @@ class {table} extends ctrl{
 			 } else {
 			    ${table}sView = "no data yet";
 			 }
+
+			 $aData['data'] = ${table}sView;
+			 $aView = open_and_render_var($this->name, 'a.{table}.all', $aData);
+
+			 $addView = easy_render($this->name, "add.{table}");
+
 			 $content  = "<div style='float:left;overflow: auto; width:45%; height:70%; border:1 #000000 solid; text-align: left;  padding: 2px'>";
-			 $content .= ${table}sView . "</div>";
-			 $content .= "<div style='float:right'>" . easy_render($this->name, "add.{table}") . "</div>";
-			 $arData['content'] = $content;			 
+			 $content .= $aView . "</div>";
+			 $content .= "<div style='float:right'>" . $addView . "</div>";
+			 $arData['content'] = $content;
 			 $this->html = render_var($this->html, $arData);
-			    
+
 		} else { // NOT admin
 			 $this->html = $this->goto(RUN_PATH."/acp","ACCESS DENIED !");
 		}
 	}
-	
+
 	function sort() {
 		if($this->is_admin()){
 			$this->html = $this->admin_view("{table}","{table} Management");
-			
+
 			$this->{table}->sort_{table}();
 			${table} = $this->{table}->fetch();
-			
+
 			${table}View = easy_render($this->name, 'a.{table}');
-			
+
 			if (count(${table})){
 			    	foreach (${table} as $row) {
 			    		${table}sView .= render_var(${table}View, $row);
-		    		}  	
+		    		}
 			} else {
 			    ${table}sView = "no data yet";
 			}
-		    			
-			$arData['content'] = ${table}sView;
+			$aData['data'] = ${table}sView;
+			$aView = open_and_render_var($this->name, 'a.{table}.all', $aData);
+
+			$arData['content'] = $aView;
 			$this->html = render_var($this->html, $arData);
 		}else{
 			$this->html = $this->goto(RUN_PATH."/acp","ACCESS DENIED !");
 		}
 	}
-	
-	
+
+
 	function {table}() {
 		if($this->is_admin()){
 			$this->html = $this->admin_view("{table}", "{table} Management");
-			
+
 			$this->{table}->{table}($this->req['id']);
 			${table} = $this->{table}->fetch();
-			
+
 			${table}View = render_var($this->name, '{table}');
-			
+
 			if (count(${table})) {
 				 ${table}sView .= render_var(${table}View, ${table}[0]);
 			} else {
-				${table}sView = "NO DATA yet..";	
+				${table}sView = "NO DATA yet..";
 			}
-			
-			$arData['content'] = ${table}sView;
+			$aData['data'] = ${table}sView;
+			$aView = open_and_render_var($this->name, 'a.{table}.all', $aData);
+
+			$arData['content'] = $aView;
 			$this->html = render_var($this->html, $arData);
 		}else{
 			$this->html = $this->goto(RUN_PATH."/acp","ACCESS DENIED !");
 		}
 	}
-		
+
 	function add() {
 		if($this->is_admin()){
 				$this->html = $this->admin_view("{table}","{table} Management");
 				$content = easy_render($this->name, "add.{table}");
-				$arData['content'] = $content;			 
+				$arData['content'] = $content;
 				$this->html = render_var($this->html, $arData);
 		}else{
 				$this->html = $this->goto(RUN_PATH."/acp","ACCESS DENIED !");
 		}
 	}
-	
+
 	function ins() {
 		if($this->is_admin()){
-			 $this->html = $this->admin_view("{table}","{table} Management");			 
+			 $this->html = $this->admin_view("{table}","{table} Management");
 			 $this->{table}->add_{table}($this->req);
-			 		 
+
 			 $content = $this->goto(RUN_PATH."/{table}"," New entry has been added.");
-			 $arData['content'] = $content;			 
+			 $arData['content'] = $content;
 			 $this->html = render_var($this->html, $arData);
 		}else{
 			 $this->html = $this->goto(RUN_PATH."/acp","ACCESS DENIED !");
 		}
 	}
-	
+
 	function ed() {
 		if($this->is_admin()){
-			 $this->html = $this->admin_view("{table}","{table} Management");			 
+			 $this->html = $this->admin_view("{table}","{table} Management");
 			 $this->{table}->{table}($this->req['id']);
 			 ${table} = $this->{table}->fetch();
-			 			 
+
 			 $content = render($this->name, "edit.{table}", ${table}[0]);
-			 $arData['content'] = $content;			 
+			 $arData['content'] = $content;
 			 $this->html = render_var($this->html, $arData);
 		}else{
 			 $this->html = $this->goto(RUN_PATH."/acp","ACCESS DENIED !");
 		}
 	}
-	
+
 	function up() {
 		if($this->is_admin()){
-			 $this->html = $this->admin_view("{table}","{table} Management");		
+			 $this->html = $this->admin_view("{table}","{table} Management");
 			 $this->{table}->edit_{table}($this->req);
-			 		
+
 			 $content = $this->goto(RUN_PATH."/{table}","Entry has been updated");
-			 $arData['content'] = $content;			 
+			 $arData['content'] = $content;
 			 $this->html = render_var($this->html, $arData);
 		}else{
 			 $this->html = $this->goto(RUN_PATH."/acp","ACCESS DENIED !");
 		}
 	}
-	
+
 	function rm() {
 		if($this->is_admin()){
-			 $this->html = $this->admin_view("{table}","{table} Management"); 
+			 $this->html = $this->admin_view("{table}","{table} Management");
 			 $this->{table}->rm_{table}($this->req['id']);
-			 			                
+
 			 $content = $this->goto(RUN_PATH."/{table}","Entry has been removed");
-			 $arData['content'] = $content;			 
+			 $arData['content'] = $content;
 			 $this->html = render_var($this->html, $arData);
 		}else{
 			 $this->html = $this->goto(RUN_PATH."/acp","ACCESS DENIED !");
 		}
 	}
-	  
+
 }//EO {table}
 ?>
