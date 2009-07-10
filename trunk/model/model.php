@@ -18,48 +18,54 @@ class Model {
 
 	protected $table;
 	protected $fields;
-	protected $select;
-	protected $from;
-	protected $where = "";
-	protected $limit;
+	protected $primaryKey;
 
      public $lastInsertID;
+
+     private $debug = false;
 
      function __construct() {
 		$this->connection = MySQL::getInstance();
      }
 
 	function query($q, $binds = array()) {
-
 		$stmt = $this->connection->prepare($q);
 
 		if (is_array($binds) && count($binds)) {
-
 			array_unshift($binds, $this->getPreparedTypeString($binds));
 			// call $stmt->bind_param('', $binds);
                call_user_func_array(array(&$stmt, 'bind_param'), $binds);
 		}
+		
+		if ($this->debug) dump($q);
+			
+		try {
+		     if (!$stmt) {
+		     	throw new Seven12_Exception("Error Executing Query: " . $this->connection->error);
+		     }
+		     $stmt->execute();
+		} catch (Exception $e) {
+			echo $e->getError();
+			if ($this->debug) exit;
+		}
 
-          if ($stmt) {
-          	$stmt->execute();
-          } else {
-          	throw new Seven12_Exception("Error Executing Some Query: " . $this->connection->error);
-          }
-
-          if ($stmt->errno) {
-          	throw new Seven12_Exception("Error executing Query: " . $stmt->error);
-          }
+		try {
+		     if ($stmt->errno) {
+		     	throw new Seven12_Exception("---Error Executing Query: " . $stmt->error);
+		     }		     
+		} catch (Exception $e) {
+			echo $e->getError();
+			if ($this->debug) exit;
+		}
 
           if ($this->connection->insert_id) {
           	$this->lastInsertID = $this->connection->insert_id;
           }
 
           $stmt->store_result();
-
 		$this->stmt = $stmt;
 
-		return true;
-
+		return $this;
 	}
 
 	public static function getPreparedTypeString(&$saParams) {
@@ -82,7 +88,6 @@ class Model {
                     $sRetval .= 's';
                 } // there is also `b` for blob
             }
-
             return $sRetval;
      }
 
@@ -134,35 +139,14 @@ class Model {
 		return $result;
 	}
 
-
 	function getResult() {
 		return $this->result;
 	}
 
 	function select($fields = "*") {
-    		$this->select =  "SELECT " . (is_array($fields) ? "`" . implode('`, `', $fields) . "`" : $fields);
-    		return $this;
+		Load()->model('Query');
+		return new MySQL_Query($fields, $this->table);
 	}
-
-	function from($table) {
-		$this->from = "FROM " . $table;
-		return $this;
-	}
-
-	function where($where) {
-		if (is_array($where)) {
-    			$this->where = "WHERE " . $this->getWhere($where);
-	    	}
-	    	return $this;
-	}
-
-	public function limit($limit = 20, $offset = null) {
-            $this->limit = "LIMIT " . (int) $limit;
-            if(null !== $offset) {
-                    $this->limit .= " OFFSET " . (int) $offset;
-            }
-            return $this;
-     }
 
 	public function delete(array $conditions) {
 		$sql = "DELETE FROM " . $this->table . " ";
@@ -170,12 +154,12 @@ class Model {
     			$sql .= "WHERE " . $this->getWhere($conditions);
 	    	}
 
-		$result = $this->query($sql, $this->getParameters());
+		$this->query($sql, $this->getParameters());
 		return true;
 	}
 
-	public function insert(array $what)
-	{
+	public function insert(array $what) {
+		$result = true;
 		$fields = array_keys($what);
 		$this->params = array_values($what);
 		$q = array_fill(0, count($what), '?');
@@ -186,21 +170,15 @@ class Model {
 				" (" . implode(', ', $fields) . ")" .
 				" VALUES(" . implode(', ', $q) . ")";
 
-			if ($this->query($sql, $this->getParameters())) {
-				$result = true;
-			} else {
-				$result = true;
-			}
-
+			$this->query($sql, $this->getParameters());			
 		} else {
 			$result = false;
 		}
-
 		return $result;
 	}
 
-	function update(array $row, $id) {
-
+	public function update(array $row, $id) {
+		$result = true;
 		$keys = array_keys($row);
 		$this->params = array_values($row);
 		$this->params['id'] = $id;
@@ -213,24 +191,17 @@ class Model {
 				// Build the query
 			$sql = "UPDATE " . $this->getTable() .
 				" SET " . implode(', ', $placeholders) .
-				" WHERE `id` = ?";
+				" WHERE `" . $this->primaryKey . "` = ?";
 
-			if ($this->query($sql, $this->getParameters())) {
-				$result = true;
-			} else {
-				$result = false;
-			}
-
+			$this->query($sql, $this->getParameters());
 		} else {
 			$result = false;
 		}
-
 		return $result;
 	}
 
 		// build join      join()->on()->where();
 	function join($table, array $where, $type) {
-
     		if (is_array($where)) {
     			$where = $this->getSimpleWhere($where);
     		}
@@ -239,11 +210,7 @@ class Model {
     			"FROM `" . $this->getTable() . "`" .
     			$type . " join `" . $table ."` on " . $where;
 
-    		if ($this->query($sql, $this->getParameters())) {
-			$result = true;
-		} else {
-			$result = false;
-		}
+    		$this->query($sql, $this->getParameters());
     	}
 
 	function setTable($table) {
@@ -270,31 +237,10 @@ class Model {
      }
 
 	function getSimpleWhere($where) {
-
 		foreach ($where as $k => $v) {
-
 			$w[] = "$k = $v";
-
 		}
 		return implode(' AND ', $w);
-     }
-
-	/**
-     * Get raw SQL code generated from other query builder functions
-     */
-     public function sql() {
-             $sql = $this->select . " \n"
-                     . $this->from . " \n"
-                     . $this->where;
-             return $sql;
-     }
-
-
-     /**
-      * Return Sql code with $this->sql() function
-      */
-     public function __toString() {
-             return $this->sql();
      }
 
 }

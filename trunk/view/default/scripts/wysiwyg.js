@@ -27,13 +27,13 @@
 // WYSIWYG Width and Height
 // Images Directory
 //document.write(LINK);
-imagesDir = LINK + "/icons/";
+imagesDir = VIEW + "/icons/";
 
 // CSS Directory
-cssDir = LINK + "/styles/";
+cssDir = VIEW + "/styles/";
 
 // Popups Directory
-popupsDir = LINK + "/popups/";
+popupsDir = VIEW + "/popups/";
 
 wysiwygWidth = 500;
 wysiwygHeight = 95;

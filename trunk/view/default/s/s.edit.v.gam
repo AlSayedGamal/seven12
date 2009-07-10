@@ -2,9 +2,10 @@
 <legend>
           edit
 </legend>
-<form name='edit' action ='{RUN_PATH}/{table}/' method='post' enctype='multipart/form-data'>
+<form name='edit' action ='{RUN_PATH}/{table}/' method='post' {enctype}>
 <input type='hidden' name='wt' value='up' />
 {elements}
 <input type='hidden' name='id' value='{id}' />
 <input type='submit' value='edit entry' />
 </form>
+</fieldset>

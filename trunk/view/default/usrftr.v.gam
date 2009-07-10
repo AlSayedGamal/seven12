@@ -1,4 +1,6 @@
-<div class='footer-txt'>
-				  <sub>&copy; 2008-2009 Seven12</sub></div>
+<br style='clear:both;' />	
+		<div class='footer-txt'>
+				  <sub>&copy; 2008-2009 {SITE_NAME}</sub>
+		</div>
 	  </body>
 </html>

@@ -1,17 +1,18 @@
 <html>
 	  <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+			<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 			<title>
 				 {SITE_NAME} | Admin Control Panel
 			</title>
 			<link rel='stylesheet' href='{LINK}/view/default/styles/acp.css' type='text/css' />
 			<script>
-						var LINK = '{LINK}';
+				var LINK = '{LINK}';
+				var VIEW = LINK + '/view/wysiwyg';
 			</script>
 			<script src='{LINK}/view/default/scripts/js.js'></script>
 			<script src='{LINK}/view/default/scripts/wysiwyg.js'></script>
 	  </head>
-	  <body style="background: url('{LINK}/view/default/images/bg.png') repeat-x;" >
+	  <body style="background: url('{LINK}/view/default/images/bg.png') repeat-x;">
 			<center>
 				  <div id='header'>
 						{header}
@@ -25,9 +26,4 @@
 						{content}
 				  </div>
 				  <img src='{LINK}/view/default/images/borderline.png' class='downborder' />
-				  
-		<div class='footer-txt'>		  <sub>&copy; 2008-2009 <a href='http://elseha.3mates.com'>مشروع التخرج</a> development and design</sub></div> 
-				  <img src='{LINK}/view/default/images/headline.png' class='footer'>
-			</div>
-	  </body>
-</html>
+			</center>

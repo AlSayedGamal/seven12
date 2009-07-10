@@ -15,6 +15,7 @@ class MySQL_Query
         protected $groupBy;
         protected $limit;
         protected $limitOffset;
+        protected $sortType;
 
         // Actual data to use
         protected $parameters = array();
@@ -58,7 +59,7 @@ class MySQL_Query
                 $sqlWhere = array();
                 $binds = array();
                 $defaultColOperators = array(0 => '', 1 => '=');
-                $ci = 0;
+#                $ci = 0;
                 foreach($conditions as $column => $value) {
                         // Column name with comparison operator
                         $colData = explode(' ', $column);
@@ -79,13 +80,13 @@ class MySQL_Query
 
 
                                 // Add to parameters array and add to WHERE clause
-                                $colParam = str_replace('.', '_', $col) . $ci;
-                                $sqlWhere[] = $columnSql . " :" . $colParam . "";
+                                $colParam = str_replace('.', '_', $col);# . $ci;
+                                $sqlWhere[] = $columnSql . " ? ";# . $colParam . "";
                                 $this->parameters[$colParam] = $value;
                         }
 
                         // Increment ensures column name distinction
-                        $ci++;
+                      #  $ci++;
                 }
 
                 if(count($sqlWhere) > 0) {
@@ -103,6 +104,11 @@ class MySQL_Query
         }
 
 
+	   public function sortType($type = "ASC") {
+			 $this->sortType = "ORDER BY id " . $type;
+			 return $this;
+	   }
+		
         /**
          * ORDER BY columns
          */
@@ -156,7 +162,7 @@ class MySQL_Query
          */
         public function getParameters()
         {
-                return $this->parameters;
+                return array_values($this->parameters);
         }
 
 
@@ -170,8 +176,10 @@ class MySQL_Query
                         . $this->where . " \n"
                         . $this->groupBy . " \n"
                         . $this->orderBy . " \n"
+                        . $this->sortType . " \n"
                         . $this->limit;
-                return $sql;
+                        
+                return trim($sql);
         }
 
 

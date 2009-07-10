@@ -37,7 +37,7 @@ function start($mode){
 			//error_reporting(E_ERROR | E_PARSE );
 			//error_reporting(E_ALL);
 			//error_reporting( E_ALL & ~E_NOTICE );
-			error_reporting(E_ERROR | E_PARSE);
+			error_reporting(E_ERROR | E_PARSE);		
 			break;
 		case 'online':
 			//error_reporting(E_ERROR | E_PARSE );
@@ -76,7 +76,8 @@ function start($mode){
 			}
 		}
 
-		$html = $ctrl->html;
+		$html  = $ctrl->html;
+		$html .= $ctrl->footer();
 	}else {
 		$_SESSION['sys_err']='Error-0001';
 		require( 'control/'.$cntrl.'.c.php' );
@@ -90,7 +91,6 @@ function start($mode){
 //	$html = $ctrl->$req['do']; // for example $users->list();
         $html = $ctrl->html;
 	}
-
 	return $html;
 }
 ?>
