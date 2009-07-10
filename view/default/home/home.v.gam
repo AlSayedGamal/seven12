@@ -6,19 +6,21 @@
 		</title>
 		<link rel='stylesheet' href='{LINK}/view/default/styles/home.css' type='text/css' />
 		<script>
-					var LINK = '{LINK}';
+			var LINK = '{LINK}';
+			var VIEW = LINK + '/view/wysiwyg';
 		</script>
 		<script src='{LINK}/view/default/scripts/js.js'></script>
 		<script src='{LINK}/view/default/scripts/wysiwyg.js'></script>
-		<link rel="alternate" type="application/rss+xml" title="SCS - RSS" href="{RUN_PATH}/news/rss" />
+		<link rel="alternate" type="application/rss+xml" title="{SITE_NAME} - RSS" href="{RUN_PATH}/news/rss" />
 		<script type="text/javascript" src="{LINK}/view/default/scripts/prototype.js"></script>
+		<script type='text/javascript' src='{LINK}/view/default/scripts/swfobject.js'></script>
 
 	</head>
 	<body>
 		<center>
 		<div id='page'>
 			<div id='header'>
-				{SITE_NAME}
+				<a href='{RUN_PATH}'>{SITE_NAME}</a>
 			</div>
 			<div id='sitebody'>
 					<div id="nv_br">
@@ -28,8 +30,8 @@
 					</div>
 
 
-				<div id='content' style='text-align:left'>
-								{content}
+				<div id='content'>
+					{content}
 				</div>
 			</div>
 			<div id='footer'>

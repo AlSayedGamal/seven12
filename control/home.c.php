@@ -24,17 +24,68 @@ class home extends ctrl{
 		$this->req = $req;
 		$this->name = 'home';
 
-		$this->html .= "<script>
-						var LINK = '".LINK."';
-			</script>";
-		$this->html .= "<script src='".LINK."/view/default/scripts/js.js'></script>";
-		$this->html .= "<script src='".LINK."/view/default/scripts/wysiwyg.js'></script>";
+		#$this->html .= "<script>
+		#				var LINK = '".LINK."';
+		#	</script>";
+		#$this->html .= "<script src='".LINK."/view/default/scripts/js.js'></script>";
+		#$this->html .= "<script src='".LINK."/view/default/scripts/wysiwyg.js'></script>";
 
 	}
 
 	function _default() {
+		// get last 5 items from media 
+		// then show them
+		Load()->model('media');
+		$media = new media_model;
+
+		$query = $media->select()->from('media')->limit(5)->sortType('DESC');
+
+		$medias = $media->query($query->sql())->fetch();
+		$mediaView = easy_render($this->name, 'media');
+
+		if ($medias) {
+			foreach ($medias as $media) {
+				$mediaViewOut .= render_var($mediaView, $media);						
+			}
+		}
+		
+		// get last video;
+		$arData['file'] = $medias[0]['file'];
+		$video = render($this->name, 'video', $arData);
+		
 		$arData = array(
-			'content' => easy_render('.', 'usrlogin')
+			'video'   => $video,
+			'content' => $mediaViewOut
+		);
+
+		$this->html .= render($this->name, 'home', $arData);
+	}
+	
+	function show() {
+		Load()->model('media');
+		$media = new media_model;
+
+		$query = $media->select()->from('media')->limit(5)->sortType('DESC');
+
+		$medias = $media->query($query->sql())->fetch();
+		$mediaView = easy_render($this->name, 'media');
+
+		if ($medias) {
+			foreach ($medias as $media) {
+				if ($media['id'] == $this->req['id']) {
+					$file = $media['file'];
+				}
+					
+				$mediaViewOut .= render_var($mediaView, $media);						
+			}
+		}
+
+		$arData['file'] = $file;
+		$video = render($this->name, 'video', $arData);
+		
+		$arData = array(
+			'video'   => $video,
+			'content' => $mediaViewOut
 		);
 		$this->html .= render($this->name, 'home', $arData);
 	}
@@ -65,7 +116,7 @@ class home extends ctrl{
 	}
 
 	function footer() {
-		$this->html .= ($this->is_admin())? easy_render('.', 'footer') : easy_render('.', 'usrftr');
+		return ($this->is_admin())? easy_render('.', 'footer') : easy_render('.', 'usrftr');
 	}
 
 }//EO home

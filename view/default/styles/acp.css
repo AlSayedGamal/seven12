@@ -15,16 +15,10 @@ body{
 	  height:40px;
 }
 
-.footer{
-	  position:absolute;
-	  top:690px;
-	  right:100px;
-	  display:block;
-}
 .footer-txt{
-	  position:absolute;
-	  top:685px;
-	  right:512px;
+	background:brown;
+	color:white;
+	
 }
 a:visited,a:link{
 	  color:white;

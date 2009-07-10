@@ -8,6 +8,7 @@ Load()->model('model');
 
 class {table}_model extends Model {
 	protected $table = '{table}';
+	protected $primaryKey = '{primary_key}';
 	
 	function __construct() {
 		parent::__construct();
@@ -15,13 +16,13 @@ class {table}_model extends Model {
 
      function sort_{table}() {
 		$query = $this->select()->from('{table}');              
-          $query->query($query->sql());       	
+          $this->query($query->sql());       	
 		return $this;
      }
     
      function {table}($id) {
-     	$query = $this->select()->from('{table}')->where(array('id' => $id))->limit(1);         		
-         	$query->query($query->sql(), $query->getParameters());
+     	$query = $this->select()->from('{table}')->where(array($this->primaryKey => $id))->limit(1);         		
+         	$this->query($query->sql(), $query->getParameters());
          	return $this;
      }
 

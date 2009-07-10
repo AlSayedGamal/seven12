@@ -10,11 +10,12 @@
 $iWasThere=true;
 
 Load()->control('control');
+Load()->lib('Exception');
 
 class scaff extends ctrl {
     	private $table;
     	private $enctype = "";
-    	private $primary_key;
+    	private $primaryKey;
 
 	function __construct($req) {
      	parent::__construct($req);
@@ -46,7 +47,7 @@ class scaff extends ctrl {
 			       $fields[]	    = $row['Field'];
 			       $this->check_type($row, $elements);
 		     } else {
-		     	$this->primary_key = $row['Key'];
+		     	$this->primaryKey = $row['Field'];
 		     }
 	     }
 
@@ -146,6 +147,7 @@ class scaff extends ctrl {
 		if(is_file($model) || touch($model))
 		{
 			  $arData['table'] 			= $this->table;
+			  $arData['primary_key']		= $this->primaryKey;
 			  $arData['updates'] 		= implode(", \n\t\t\t\t\t", $model_data['set']);
 			  $arData['insert_values']	= implode(", \n\t\t\t\t\t", $model_data['req']);
 
@@ -182,7 +184,16 @@ class scaff extends ctrl {
 
 
 	function write_controller_link($file) {
-	  	$optionsFile = INSTALL_PATH . '/view/' . THEME . '/' . $file . '.v.gam';
+	  	$optionsFile = INSTALL_PATH . 'view/' . THEME . '/' . $file . '.v.gam';
+	  	
+	  	try {
+		  	if (!is_writeable($optionsFile)) {
+		  		throw new Seven12_Exception("Can NOT write to : " . $optionsFile);
+		  	}
+		} catch (Exception $e) {
+			echo $e->getError();
+		}
+		
   		$stringHTML = file( $optionsFile );
   		$link = sprintf("<a class='icon' border=0 href='{RUN_PATH}/%s'>%s</a> | \n", $this->table, ucfirst($this->table));
   		if (!stristr(implode(' ', $stringHTML), $this->table)) {
