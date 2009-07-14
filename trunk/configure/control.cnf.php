@@ -4,8 +4,8 @@ define('SCAFF',"");
 //you can avoid this by removing these controllers if you don't need them. [after deployment]
 $arInstldContrl = array(
 		          'default'	  =>'home',
-		          ,'s'		  =>'scaff',
-			     ,'acp'	  =>'acp',
+		         's'		  =>'scaff',
+			     'acp'	  =>'acp',
 // add your controllers
 				
 			);
