@@ -11,10 +11,10 @@ function render( $name, $key, $param = 'no' ){
 }
 
 function easy_render( $name, $key ){
-//		echo  INSTALL_PATH.'/view/'.THEME.'/'."$key".'.v.gam' ; // trace view files
+//		echo  INSTALL_PATH.'/view/'.THEME.'/'."$key".'.v.html' ; // trace view files
 	  $name = ($name == ".") ? "" : $name . '/';
 	  
-	  $stringHTML = file_get_contents( INSTALL_PATH.'/view/'.THEME.'/'. $name . "$key".'.v.gam' );
+	  $stringHTML = file_get_contents( INSTALL_PATH.'/view/'.THEME.'/'. $name . "$key".'.v.html' );
 	  $stringHTML = basic_render($stringHTML);
 	  
 	  return $stringHTML;
@@ -23,7 +23,7 @@ function easy_render( $name, $key ){
 function open_and_render_var( $name, $key, $param = 'no' ) {
 	  $name = ($name == ".") ? "" : $name . '/';	
 
-	  $stringHTML = file_get_contents( INSTALL_PATH . '/view/' . THEME . '/' . $name . $key . '.v.gam' );
+	  $stringHTML = file_get_contents( INSTALL_PATH . '/view/' . THEME . '/' . $name . $key . '.v.html' );
 	  $stringHTML = render_var($stringHTML, $param);
 
 	  return $stringHTML;
