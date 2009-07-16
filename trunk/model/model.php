@@ -9,36 +9,42 @@ Load()->model('Mysql');
 
 class Model {
 
-     protected $connection;
-     protected $result;
+     protected $connection 	= null;
+	protected $stmt 		= null;
+	protected $varsBound 	= false;
 
-	protected $stmt;
-	protected $varsBound = false;
-	protected $results;
+	protected $table		= "";
+	#protected $fields;
+	protected $primaryKey	= "";
+	protected $results 		= array();
+     protected $lastInsertID	= "";
 
-	protected $table;
-	protected $fields;
-	protected $primaryKey;
+     private $debug 		= false;
 
-     public $lastInsertID;
-
-     private $debug = false;
+	// Array of all queries that have been executed for any DataMapper (static)
+	protected static $queryLog = array();
 
      function __construct() {
 		$this->connection = MySQL::getInstance();
      }
 
-	function query($q, $binds = array()) {
-		$stmt = $this->connection->prepare($q);
+	// we need to split this
+	function query($sql, $binds = array()) {
+
+		// Add query to log
+		$this->logQuery($sql, $binds);
+
+		// prepare query
+		$stmt = $this->connection->prepare($sql);
 
 		if (is_array($binds) && count($binds)) {
 			array_unshift($binds, $this->getPreparedTypeString($binds));
 			// call $stmt->bind_param('', $binds);
                call_user_func_array(array(&$stmt, 'bind_param'), $binds);
 		}
-		
-		if ($this->debug) dump($q);
-			
+
+		if ($this->debug) $this->debug();
+
 		try {
 		     if (!$stmt) {
 		     	throw new Seven12_Exception("Error Executing Query: " . $this->connection->error);
@@ -50,9 +56,9 @@ class Model {
 		}
 
 		try {
-		     if ($stmt->errno) {
+		     if ($stmt->errno) { // results from no binds
 		     	throw new Seven12_Exception("---Error Executing Query: " . $stmt->error);
-		     }		     
+		     }
 		} catch (Exception $e) {
 			echo $e->getError();
 			if ($this->debug) exit;
@@ -65,8 +71,11 @@ class Model {
           $stmt->store_result();
 		$this->stmt = $stmt;
 
+		$this->clearResults();
+
 		return $this;
 	}
+
 
 	public static function getPreparedTypeString(&$saParams) {
             $sRetval = '';
@@ -91,10 +100,14 @@ class Model {
             return $sRetval;
      }
 
+
 	public function fetch_assoc() {
         // checks to see if the variables have been bound, this is so that when
         //  using a while ($row = $this->stmt->fetch_assoc()) loop the following
         // code is only executed the first time
+       # $results = $result = array();
+	   static $results = array();
+
         if (!$this->varsBound) {
             $meta = $this->stmt->result_metadata();
             while ($column = $meta->fetch_field()) {
@@ -102,7 +115,7 @@ class Model {
                 // e.g. "This Column". 'Typer85 at gmail dot com' pointed this out
                 //$columnName = str_replace(' ', '_', $column->name);
 
-                $bindVarArray[] = &$this->results[$column->name];
+                $bindVarArray[] = &$results[$column->name];
             }
             call_user_func_array(array($this->stmt, 'bind_result'), $bindVarArray);
             $this->varsBound = true;
@@ -117,36 +130,47 @@ class Model {
             // $results[0], $results[1], etc, were all references and pointed to
             // the last dataset
   //          dump($this->results);
-            foreach ($this->results as $k => $v) {
-                $results[$k] = $v;
+            foreach ($results as $k => $v) {
+                $result[$k] = $v;
             }
-            return $results;
+            return $result;
         } else {
             return null;
         }
 	}
 
+
 	// if you want to return an object you should create
 	// class and assign $row to it in the upper function
 	function fetch() {
-		$result = array();
+		#$results = array();
 		while ($row = $this->fetch_assoc()) {
 			// r[] = new Object($row);
-		    	$result[] = $row;
+		    	$this->results[] = $row;
 		}
 		$this->stmt->free_result();
 		$this->stmt->close();
-		return $result;
+
+		return $this->results;
 	}
 
-	function getResult() {
-		return $this->result;
+
+	function getResults() {
+		return $this->results;
 	}
+
+
+	function clearResults() {
+		$this->results = array();
+		return true;
+	}
+
 
 	function select($fields = "*") {
 		Load()->model('Query');
 		return new MySQL_Query($fields, $this->table);
 	}
+
 
 	public function delete(array $conditions) {
 		$sql = "DELETE FROM " . $this->table . " ";
@@ -158,8 +182,9 @@ class Model {
 		return true;
 	}
 
+
 	public function insert(array $what) {
-		$result = true;
+		$ret = true;
 		$fields = array_keys($what);
 		$this->params = array_values($what);
 		$q = array_fill(0, count($what), '?');
@@ -170,15 +195,16 @@ class Model {
 				" (" . implode(', ', $fields) . ")" .
 				" VALUES(" . implode(', ', $q) . ")";
 
-			$this->query($sql, $this->getParameters());			
+			$this->query($sql, $this->getParameters());
 		} else {
-			$result = false;
+			$ret = false;
 		}
-		return $result;
+		return $ret;
 	}
 
+
 	public function update(array $row, $id) {
-		$result = true;
+		$ret = true;
 		$keys = array_keys($row);
 		$this->params = array_values($row);
 		$this->params['id'] = $id;
@@ -195,10 +221,11 @@ class Model {
 
 			$this->query($sql, $this->getParameters());
 		} else {
-			$result = false;
+			$ret = false;
 		}
-		return $result;
+		return $ret;
 	}
+
 
 		// build join      join()->on()->where();
 	function join($table, array $where, $type) {
@@ -213,17 +240,21 @@ class Model {
     		$this->query($sql, $this->getParameters());
     	}
 
+
 	function setTable($table) {
 		$this->table = $table;
 	}
+
 
 	function getTable() {
 		return $this->table;
 	}
 
+
 	function getParameters() {
 		return $this->params;
 	}
+
 
      function getWhere($where) {
     		foreach($where as $k=>$v) {
@@ -236,6 +267,7 @@ class Model {
     		return $where;
      }
 
+
 	function getSimpleWhere($where) {
 		foreach ($where as $k => $v) {
 			$w[] = "$k = $v";
@@ -243,5 +275,46 @@ class Model {
 		return implode(' AND ', $w);
      }
 
+
+	/**
+	 * Prints all executed SQL queries - useful for debugging
+	 */
+	public function debug($row = null)
+	{
+		if($row) {
+			// Dump debugging info for current row
+		}
+
+		echo "<p>Executed " . $this->getQueryCount() . " queries:</p>";
+		echo "<pre>\n";
+		print_r(self::$queryLog);
+		echo "</pre>\n";
+	}
+
+
+	/**
+	 * Log query
+	 *
+	 * @param string $sql
+	 * @param array $data
+	 */
+	public function logQuery($sql, $data = null)
+	{
+		self::$queryLog[] = array(
+			'query' => $sql,
+			'data' => $data
+			);
+	}
+
+
+	/**
+	 * Get count of all queries that have been executed
+	 *
+	 * @return int
+	 */
+	public function getQueryCount()
+	{
+		return count(self::$queryLog);
+	}
 }
 ?>
