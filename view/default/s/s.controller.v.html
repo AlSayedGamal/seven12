@@ -32,8 +32,7 @@ class {table} extends ctrl{
 		if ($this->is_admin()) { // Is Admin?
 			 $this->html = $this->admin_view("{table}","{table} Management");
 
-			 $this->{table}->sort_{table}();
-			 ${table} = $this->{table}->fetch();
+			 ${table} = $this->{table}->sort_{table}();
 
 			 ${table}View = easy_render($this->name, 'a.{table}');
 
@@ -65,8 +64,7 @@ class {table} extends ctrl{
 		if($this->is_admin()){
 			$this->html = $this->admin_view("{table}","{table} Management");
 
-			$this->{table}->sort_{table}();
-			${table} = $this->{table}->fetch();
+			${table} = $this->{table}->sort_{table}();
 
 			${table}View = easy_render($this->name, 'a.{table}');
 
@@ -92,8 +90,7 @@ class {table} extends ctrl{
 		if($this->is_admin()){
 			$this->html = $this->admin_view("{table}", "{table} Management");
 
-			$this->{table}->{table}($this->req['id']);
-			${table} = $this->{table}->fetch();
+			v = $this->{table}->{table}($this->req['id']);
 
 			${table}View = render_var($this->name, '{table}');
 
@@ -139,8 +136,7 @@ class {table} extends ctrl{
 	function ed() {
 		if($this->is_admin()){
 			 $this->html = $this->admin_view("{table}","{table} Management");
-			 $this->{table}->{table}($this->req['id']);
-			 ${table} = $this->{table}->fetch();
+			 ${table} = $this->{table}->{table}($this->req['id']);
 
 			 $content = render($this->name, "edit.{table}", ${table}[0]);
 			 $arData['content'] = $content;
