@@ -49,9 +49,10 @@ class {table} extends ctrl{
 
 			 $addView = easy_render($this->name, "add.{table}");
 
-			 $content  = "<div style='float:left;overflow: auto; width:45%; height:70%; border:1 #000000 solid; text-align: left;  padding: 2px'>";
-			 $content .= $aView . "</div>";
-			 $content .= "<div style='float:right'>" . $addView . "</div>";
+			 $data['aView'] = $aView;
+			 $data['addView'] = $addView;
+			 $content = render('.', 'acp_body', $data);
+
 			 $arData['content'] = $content;
 			 $this->html = render_var($this->html, $arData);
 

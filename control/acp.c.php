@@ -18,7 +18,6 @@ Load()->control('control');
 class acp extends ctrl{
 	function __construct($req) {
 		parent::__construct($req);
-		global $iWasThere;
 		$this->req = $req;
 		$this->name = 'acp';
 	}
@@ -36,7 +35,7 @@ class acp extends ctrl{
 			$this->html 	   .= render($this->name, 'acp', $gstView);
 		}
 	}
-	
+
 	function auth() {
 		if($this->req['username'] == "admin" && $this->req['password'] == "3mates"){
 			  $_SESSION['admin'] = P_ADMIN;
@@ -48,8 +47,10 @@ class acp extends ctrl{
 
 	function out() {
 		if ($this->is_admin()) {
-			  unset($_SESSION['admin']);
+			  unset($_SESSION);
 			  $this->html .= $this->goto(RUN_PATH . "/acp", "You have been logged out");
+		} else {
+			$this->html .= $this->goto(RUN_PATH . "/acp", "", 0);
 		}
 	}
 

@@ -20,76 +20,22 @@ Load()->control('control');
 class home extends ctrl{
 	function __construct($req) {
 		parent::__construct($req);
-		global $iWasThere;
 		$this->req = $req;
 		$this->name = 'home';
-
-		#$this->html .= "<script>
-		#				var LINK = '".LINK."';
-		#	</script>";
-		#$this->html .= "<script src='".LINK."/view/default/scripts/js.js'></script>";
-		#$this->html .= "<script src='".LINK."/view/default/scripts/wysiwyg.js'></script>";
-
 	}
 
 	function _default() {
-		// get last 5 items from media 
+		// get last 5 items from media
 		// then show them
-		Load()->model('media');
-		$media = new media_model;
 
-		$query = $media->select()->from('media')->limit(5)->sortType('DESC');
-
-		$medias = $media->query($query->sql())->fetch();
-		$mediaView = easy_render($this->name, 'media');
-
-		if ($medias) {
-			foreach ($medias as $media) {
-				$mediaViewOut .= render_var($mediaView, $media);						
-			}
-		}
-		
-		// get last video;
-		$arData['file'] = $medias[0]['file'];
-		$video = render($this->name, 'video', $arData);
-		
 		$arData = array(
-			'video'   => $video,
-			'content' => $mediaViewOut
+			'content' => 'content'
 		);
 
 		$this->html .= render($this->name, 'home', $arData);
 	}
-	
-	function show() {
-		Load()->model('media');
-		$media = new media_model;
 
-		$query = $media->select()->from('media')->limit(5)->sortType('DESC');
 
-		$medias = $media->query($query->sql())->fetch();
-		$mediaView = easy_render($this->name, 'media');
-
-		if ($medias) {
-			foreach ($medias as $media) {
-				if ($media['id'] == $this->req['id']) {
-					$file = $media['file'];
-				}
-					
-				$mediaViewOut .= render_var($mediaView, $media);						
-			}
-		}
-
-		$arData['file'] = $file;
-		$video = render($this->name, 'video', $arData);
-		
-		$arData = array(
-			'video'   => $video,
-			'content' => $mediaViewOut
-		);
-		$this->html .= render($this->name, 'home', $arData);
-	}
-	
 	function about() {
 		$arData['content']=easy_render($this->name, 'about');
 		$this->html .= render($this->name, 'home',$arData);
@@ -109,7 +55,7 @@ class home extends ctrl{
 				Sender Message:
 				".nl2br($this->req['msg'])."
 			</pre>";
-			
+
 		ht_mail(WEB_ADMIN_MAIL,"Contact inquery",$message,'no-reply@scs-me.com',"contact-us form");
 		$thankYou.=$this->goto(RUN_PATH,easy_render('.', 'thankyou'));
 		$this->html .= render('.', 'home',array('content'=>$thankYou));

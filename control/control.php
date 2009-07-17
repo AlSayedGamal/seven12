@@ -18,15 +18,9 @@ Load()->lib('render');
 
 class ctrl {
     private $name = "";
-    private $html = "";
-    private $message = "";
     private $req  = array();
 
-    function __construct($req){
-	  $iWasThere = 1;
-
-     //   $this->html=$this->index($req);
-	}//ctrl()end
+    function __construct(){}
 /*****************************************
      @param    string $function case name
      @name     route_processor()
@@ -39,7 +33,7 @@ class ctrl {
 ******************************************/
      function route_processor($function)
           {
-	          $funPath="/{this->$name}/$function";
+	          $funPath = "/{$this->name}/$function";
 	          return $funPath;
           }
 /*****************************************
@@ -60,31 +54,17 @@ class ctrl {
 			header("Location: " . $path);
 		}
 
-		$this->message = $msg;
-		$msg = '<div style="font-size:14px; color:#000000;">';
-		$msg .= '<div style="padding:8px; background:#eee; font:\'Courier New\', Courier, mono; font-weight:bold;">';
-		$msg .= $this->getMessage();
-		$msg .= '</div>';
-		$msg .= '</div>';
-
-	     $out .= "$msg
-	     <script>
-	     function redir()
-	     {
-	        location.href='$path';
-	     }
-	     setTimeout('redir()',{$seconds}000);
-	     </script>";
-
-		return $out;
-	}//goto()end
-
-	public function getMessage() {
-		return $this->message;
+		$data = array(
+					'message' => $msg,
+					'path'	=> $path,
+					'seconds' => $seconds
+				);
+		$html = render('.', 'redirect', $data);
+		return $html;
 	}
 
 	function is_admin() {
-		if($_SESSION['admin'] == P_ADMIN){
+		if(isset($_SESSION['admin']) && $_SESSION['admin'] == P_ADMIN){
 			  return true;
 		}
 		return false;
@@ -97,14 +77,19 @@ class ctrl {
 	  */
 	 function admin_view($shrt, $title){
 		$miniOptions = easy_render("acp", 'miniOptions');
+		$data = array(
+				'shrt' => $shrt,
+				'title' => $title,
+				'miniOptions' => $miniOptions
+				);
 		$arData = array(
-				'info' => "<sub><a style='padding:0px' href='" . RUN_PATH . "/acp'>Admin Control Panel</a> >> <a style='padding:0px' href='" . RUN_PATH . "/$shrt'>$title</a></sub><br />$miniOptions"
-			   	,'header'=>"<h1>Admin Control Panel</h1>"
+				'info' => render('acp', 'header', $data),
+			   	'header'=>"<h1>Admin Control Panel</h1>"
 			   	);
 		$header = render("acp", 'main', $arData);
 		return $header;
 	 }
-	 
+
 	 function footer() {
 	 	return ($this->is_admin()) ? easy_render('.', 'footer') : easy_render('.', 'usrftr');
 	 }
