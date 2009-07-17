@@ -91,7 +91,7 @@ class {table} extends ctrl{
 		if($this->is_admin()){
 			$this->html = $this->admin_view("{table}", "{table} Management");
 
-			v = $this->{table}->{table}($this->req['id']);
+			${table} = $this->{table}->{table}($this->req['id']);
 
 			${table}View = render_var($this->name, '{table}');
 
