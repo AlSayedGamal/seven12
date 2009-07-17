@@ -1,0 +1,9 @@
+@TODO: Improve Uploader Class
+		- upload many files
+		- aware of user restrictions
+
+@TODO: Ajax Seven12
+@TODO: Controllers SHOULD be more modular/Customizable...
+@TODO: Improve Model or Integrate PHPDataMapper
+@TODO: Integrate Smarty
+@TODO: Improve Security (XSS)

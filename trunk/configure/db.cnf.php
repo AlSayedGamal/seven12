@@ -12,7 +12,7 @@ $development['dbUser'] = '';
 $development['dbPass'] = '';
 
 // deploy what? $production OR $development
-$db = ($_SERVER['SERVER_NAME'] == "localhost") ? $development : $production;
+$db = ($_SERVER["REMOTE_ADDR"] == "127.0.0.1") ? $development : $production;
 
 define('DB_HOST', $db['dbHost']);
 define('DB_NAME', $db['dbName']);

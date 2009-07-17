@@ -85,7 +85,7 @@ class scaff extends ctrl {
 		return $html;
 	}
 
-	// will be written to a.{table}.all.v.gam : table with header
+	// will be written to a.{table}.all.v.html : table with header
 	function create_mini_show($fields) {
 		foreach ($fields as &$v)	{
 			  $v = ucfirst($v);
@@ -198,7 +198,7 @@ class scaff extends ctrl {
 
 
 	function write_controller_link($file) {
-	  	$optionsFile = INSTALL_PATH . 'view/' . THEME . '/' . $file . '.v.gam';
+	  	$optionsFile = INSTALL_PATH . 'view/' . THEME . '/' . $file . '.v.html';
 
 	  	try {
 		  	if (!is_writeable($optionsFile)) {
@@ -226,11 +226,11 @@ class scaff extends ctrl {
 		$this->html .= $this->outMsg("Create Directory [<i>{$this->table}</i>]", "done");
 
 	  	$views = array(
-					"view" => "view/default/{$this->table}/{$this->table}.v.gam",
-					"a" 	  => "view/default/{$this->table}/a.{$this->table}.v.gam",
-					"miniA"=> "view/default/{$this->table}/a.{$this->table}.all.v.gam",
-					"add"  => "view/default/{$this->table}/add.{$this->table}.v.gam",
-					"edit" => "view/default/{$this->table}/edit.{$this->table}.v.gam"
+					"view" => "view/default/{$this->table}/{$this->table}.v.html",
+					"a" 	  => "view/default/{$this->table}/a.{$this->table}.v.html",
+					"miniA"=> "view/default/{$this->table}/a.{$this->table}.all.v.html",
+					"add"  => "view/default/{$this->table}/add.{$this->table}.v.html",
+					"edit" => "view/default/{$this->table}/edit.{$this->table}.v.html"
   				);
 
 		file_put_contents($views['view'], $elements['show']);
@@ -249,7 +249,7 @@ class scaff extends ctrl {
        		chmod($v, 0646);
        	}
 
-		$msg = "Write view files[ {$this->table}/<strong>{</strong>a.{$this->table}.v.gam,{$this->table}.v.gam,add.{$this->table}.v.gam,edit.{$this->table}.v.gam<strong>}</strong> ]";
+		$msg = "Write view files[ {$this->table}/<strong>{</strong>a.{$this->table}.v.html,{$this->table}.v.html,add.{$this->table}.v.html,edit.{$this->table}.v.html<strong>}</strong> ]";
 		return $this->outMsg($msg, "done");
 	}
 
