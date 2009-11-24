@@ -2,7 +2,7 @@
 /******
 ** CleanURL
 ** Make your URLs User & Google friendly
-** Version 0.9
+** Version 0.95
 ******
 ** Author: Huda M Elmatsani
 ** Email: 	justhuda ** netscape ** net
@@ -11,6 +11,10 @@
 ** Email: mail.gamal[at]gmail.com
 **
 ** 13/Oct/2008
+**
+** Modified by: Maher M. Saif
+** Email: maher.m.saif[@t]gmail[d.t]com;
+** 24/Nov/2009
 ******
 ** Copyright (c) 2004 Huda M Elmatsani All rights reserved.
 ** This program is free for any purpose use.
@@ -24,7 +28,16 @@
 **
 ** edit your .htaccess and use directive RewriteRule
 ** Example:
-**
+
+** RewriteEngine on
+
+** RewriteCond %{REQUEST_FILENAME} !-f
+** RewriteCond %{REQUEST_FILENAME} !-d
+
+** RewriteRule ^(.*)  index.php
+
+** OR **
+
 ** RewriteEngine on
 ** RewriteRule ^news(\/.*)*$  /news.php
 **
@@ -80,7 +93,7 @@ class CleanURL {
 		$uri = $_SERVER['REQUEST_URI'];
 		$script = $_SERVER['SCRIPT_NAME'];
 		/* get extension */
-		$ext = end( explode(".",$script) );
+		$ext = end( explode(".", $script) );
 
 		/* if extension is found in URL, eliminate it */
 		if(strstr($uri,".")) {
@@ -96,10 +109,10 @@ class CleanURL {
 
 		/* pick the name without extension */
 		$basename = basename ($script, '.'.$ext);
+		
 		/* slicing query string */
-		$temp  = explode('/',$uri);
-		$key   = array_search($basename,$temp);
-		$parts = array_slice ($temp, $key+1);
+		$parts = explode('/', trim($uri, '/'));
+		
 		$this->basename = $basename;
 		$this->parts = $parts;
 
@@ -115,7 +128,7 @@ class CleanURL {
 		}
 		$this->slashes = $slashes;
 		/* make relative path variable available for webpage */
-		eval("\$GLOBALS['$relativevar'] = '$slashes';");
+		$GLOBALS[$relativevar] = $slashes;
 
 	}
 
@@ -129,11 +142,11 @@ class CleanURL {
 		$numargs = func_num_args();
 		$arg_list = func_get_args();
 		$urlparts = $this->getParts();
-		for ($i = 0; $i < $numargs; $i++) {
-			/* make them available for webpage */
-			//eval ("\$GLOBALS['".$arg_list[$i] ."']= '$urlparts[$i]';");
-			eval ("\$_GET['".$arg_list[$i] ."']= '$urlparts[$i]';");
-		}
+		
+		foreach ($arg_list as $arg) {
+			$part = array_shift($urlparts);
+			$_GET[$arg] = $part;
+		}		
 
    }
 
@@ -142,7 +155,11 @@ class CleanURL {
 		$url=parse_url($stringurl);
 		$strurl = basename($url['path'],".php");
 		$qstring = parse_str($url['query'],$vars);
-		while(list($k,$v) = each($vars)) $strurl .= "/".$v;
+		
+		while (list($k,$v) = each($vars)) { 
+			$strurl .= "/" . $v;
+		}
+		
 		return $strurl;
 
    }

@@ -34,15 +34,17 @@ function start($mode){
 
 	switch($mode){
 		case 'dev':
+			define('DEBUG', true);
 			//error_reporting(E_ERROR | E_PARSE );
 			//error_reporting(E_ALL);
 			//error_reporting( E_ALL & ~E_NOTICE );
 			error_reporting(E_ERROR | E_PARSE);		
 			break;
 		case 'online':
+			define('DEBUG', false);
 			//error_reporting(E_ERROR | E_PARSE );
 			//error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
-			//error_reporting(0);
+			error_reporting(0);
 			break;
 		}
 

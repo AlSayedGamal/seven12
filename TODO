@@ -7,3 +7,4 @@
 @TODO: Improve Model or Integrate PHPDataMapper
 @TODO: Integrate Smarty
 @TODO: Improve Security (XSS)
+@TODO: Add Caching
