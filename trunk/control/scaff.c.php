@@ -1,24 +1,27 @@
 <?php
 /*************///scaffloding class//************
 /********************************************
-     @name     scaffolding
-     @filename scaff.c.php
+     @name     		scaffolding
+     @filename 		scaff.c.php
      @description   Scaffolding a table
-     @author   AlSayed Gamal <mail.gamal@gmail.com> <http://www.egamal.com>
+     @author   		AlSayed Gamal <mail.gamal@gmail.com> <http://www.egamal.com>
 *********************************************/
 
-$iWasThere=true;
+$iWasThere = true;
 
 Load()->control('control');
 Load()->lib('Exception');
 
 class scaff extends ctrl {
+	
     	private $table;
     	private $enctype = "";
     	private $primaryKey;
 
 	function __construct($req) {
+		
      	parent::__construct($req);
+		
      	$this->req = $req;
      	$this->name = 's';
 
@@ -33,37 +36,64 @@ class scaff extends ctrl {
      	}
 */
      	$this->index();
+		
      }
+	 
 
-     function index(){
+     function index() {
+     	
      	Load()->lib('db');
 
-          $qDescribeTable = "describe {$this->table}";
-          $result 		  = query($qDescribeTable);
-	     while ($row = mysql_fetch_array($result,MYSQL_ASSOC)) {
-		     if($row['Key'] != "PRI"){
-			       $fields_in_set[] = $this->add_to_set($row);
-			       $fields_in_req[] = $this->add_to_req($row);
-			       $fields[]	    = $row['Field'];
-			       $this->check_type($row, $elements);
-		     } else {
-		     	$this->primaryKey = $row['Field'];
-		     }
-	     }
+        $qDescribeTable = "describe {$this->table}";
+        $result 		  = query($qDescribeTable);
+		  
+	    while ($row = mysql_fetch_array($result,MYSQL_ASSOC)) {
+	    	
+		    if($row['Key'] != "PRI"){
+		    	
+		       $fields_in_set[] = $this->add_to_set($row);
+		       $fields_in_req[] = $this->add_to_req($row);
+		       $fields[]	    = $row['Field'];
+		       $this->check_type($row, $elements);
+			   
+		    } else {
+		    	
+		    	$this->primaryKey = $row['Field'];
+				
+		    }
+			
+	    }
+     
+          // if you want to scaff a model only
+         if ($this->req['type'] == "model") {
+          	
+          	$this->html .= $this->write_model_file(array(
+													'set'=>$fields_in_set, 
+													'req'=>$fields_in_req
+													));
+			
+         } else {
+          	
+ 		  	$this->html .= $this->write_model_file(array(
+													'set'=>$fields_in_set, 
+													'req'=>$fields_in_req
+													));
+		     
+	    	$elements['show']		= $this->create_user_show($fields);
+         	$elements['ashow']		= $this->create_admin_show($fields);
+         	$elements['miniAShow'] 	= $this->create_mini_show($fields);
+	     
+		    $this->html .= $this->write_view_files($elements);
 
-          $elements['show']	= $this->create_user_show($fields);
-          $elements['ashow']	= $this->create_admin_show($fields);
-          $elements['miniAShow'] = $this->create_mini_show($fields);
+		    $this->html .= $this->write_controller_file();
+			 
+		}
 
-          $this->html .= $this->write_view_files($elements);
-
-          $this->html .= $this->write_model_file(array('set'=>$fields_in_set, 'req'=>$fields_in_req, 'col'=> $columns));
-
-          $this->html .= $this->write_controller_file();
-
-          $this->html .=  "your are now ready to browse <a href='" . RUN_PATH . "/{$this->table}'>{$this->table}</a> ";
+        $this->html .=  "your are now ready to browse <a href='" . 
+						RUN_PATH . "/{$this->table}'>{$this->table}</a> ";
 
 	}
+	
 
 	function add_to_set($row){
 		return sprintf("'`%s`' => \$req['%s']", $row['Field'], $row['Field']);
@@ -74,22 +104,27 @@ class scaff extends ctrl {
 	}
 
 	function create_user_show($fields){
+		
 		foreach ($fields as &$v)	{
 			  $v = "{".$v."}";
 		}
+		
 		$html = "<table>
 				 <tr>
 					  <td>" . implode("</td>\n\t\t<td>", $fields) . "</td>
 				 </tr>
 			    </table>";
+				
 		return $html;
 	}
 
 	// will be written to a.{table}.all.v.html : table with header
 	function create_mini_show($fields) {
+		
 		foreach ($fields as &$v)	{
 			  $v = ucfirst($v);
 		}
+		
 		$html = "<table style='width:100%'>
 				 <tr style='text-align:left'>
 					  <th>" . implode("</th>\n\t\t<th>", $fields) . "</th>
@@ -97,14 +132,18 @@ class scaff extends ctrl {
 				 </tr>
 				 {data}
 			    </table>";
+				
 		return $html;
 	}
+	
 
 	function create_admin_show($fields){
+		
 		foreach ($fields as &$v)	{
 			  $v = "{".$v."}";
 		}
-		$html="
+		
+		$html = "
 				<tr>
 				  <td>" . implode("</td>\n\t\t<td>", $fields) . "</td>
 				  <td style='text-align:right'>
@@ -116,14 +155,17 @@ class scaff extends ctrl {
 					  </a>
 				  </td>
 				</tr>";
+				
 		return $html;
   	}
+	
 
 	function check_type($row, &$elements){
 
 		$label = $this->cleanLabel($row['Field']);
 
 		switch($row['Type']){
+			
 			case 'text':
 				$elements['add'] .= "<label for='{$row['Field']}'>{$label}:</label><br />
 			  		<textarea id='{$row['Field']}'  name='{$row['Field']}'></textarea>
@@ -131,31 +173,43 @@ class scaff extends ctrl {
 							generate_wysiwyg('{$row['Field']}');
 						</script>
 			  		<br />\n";
+					
 				$elements['edit'] .= "{$label}:<br />
 			  		<textarea id='{$row['Field']}'  name='{$row['Field']}'>{{$row['Field']}}</textarea>
 						<script language=\"javascript1.2\">
 							generate_wysiwyg('{$row['Field']}');
 						</script>
 			  		<br />\n";
+					
 			break;
+			
 			default:
 				if ($row['Field'] === "password" or $row['Field'] === "passwd") {
+					
 					$elements['add']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='password' name='{$row['Field']}' /><br />\n";
 				  	$elements['edit']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='password' name='{$row['Field']}' value='{{$row['Field']}}' /><br />\n";
+					
 				} else if (strpos($row['Field'], "file") !== FALSE) {
+					
 					$elements['add']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='file' name='{$row['Field']}' /><br />\n";
 				  	$elements['edit']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='file' name='{$row['Field']}' value='{{$row['Field']}}' /><br />\n";
 				  	$this->enctype = "enctype='multipart/form-data'";
+					
 				} else {
+					
 					$elements['add']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='text' name='{$row['Field']}' /><br />\n";
 					$elements['edit']	.= "<label for='{$row['Field']}'>{$label}:</label><input id='{$row['Field']}' type='text' name='{$row['Field']}' value='{{$row['Field']}}' /><br />\n";
+					
 				}
+				
 			break;
 
 		}
 	}
+	
 
 	function write_model_file($model_data){
+		
 		$model = "./model/{$this->table}.php";
 
 		if(is_file($model) || touch($model))
@@ -176,7 +230,9 @@ class scaff extends ctrl {
 		return $this->outMsg("Create Model", "failed");
 	}
 
+
 	function write_controller_file() {
+		
 		$arData['table'] = $this->table;
 		$cntrl = "./control/{$this->table}.c.php";
 		$verbose = "";
@@ -198,27 +254,37 @@ class scaff extends ctrl {
 
 
 	function write_controller_link($file) {
+		
 	  	$optionsFile = INSTALL_PATH . 'view/' . THEME . '/' . $file . '.v.html';
 
 	  	try {
+	  		
 		  	if (!is_writeable($optionsFile)) {
 		  		throw new Seven12_Exception("Can NOT write to : " . $optionsFile);
 		  	}
+			
 		} catch (Exception $e) {
 			echo $e->getError();
 		}
 
   		$stringHTML = file( $optionsFile );
-  		$link = sprintf("<a class='icon' border=0 href='{RUN_PATH}/%s'>%s</a> | \n", $this->table, ucfirst($this->table));
+  		$link = sprintf("<a class='icon' border=0 href='{RUN_PATH}/%s'>%s</a> | \n", 
+							$this->table, ucfirst($this->table));
+		
   		if (!stristr(implode(' ', $stringHTML), $this->table)) {
+  			
   			$out[0] = array_shift($stringHTML);
   			$out[1] = $link;
   			$out = array_merge($out, $stringHTML);
   			file_put_contents($optionsFile, $out);
+			
   		}
+		
 	}
 
+
 	function write_view_files($elements){
+		
 	  	$dir = "view/default/" . $this->table;
 	  	if (!is_dir($dir) && !mkdir($dir, 0777)) {
 			die("Coudn't create views directory: " . $this->table);
@@ -251,12 +317,15 @@ class scaff extends ctrl {
 
 		$msg = "Write view files[ {$this->table}/<strong>{</strong>a.{$this->table}.v.html,{$this->table}.v.html,add.{$this->table}.v.html,edit.{$this->table}.v.html<strong>}</strong> ]";
 		return $this->outMsg($msg, "done");
+		
 	}
+
 
 
 	function cleanLabel($gluedStr){
 		return ucfirst(str_replace('_'," ", $gluedStr));
 	}
+
 
 	function outMsg($msg, $type) {
 		if ($type === "success" || $type === "done") {
@@ -268,5 +337,6 @@ class scaff extends ctrl {
 		$out .= "<span style='color:" . $color . ";font-family:verdana;font-weight:bold'>" . ucfirst($type) . "</span><br />";
 	  return $out;
 	}
+	
 }
 ?>
