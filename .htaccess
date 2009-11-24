@@ -1,8 +1,12 @@
 RewriteEngine on
 
+# Protect application and system files from being viewed
+RewriteRule ^(configure|control|shared|model|tmp) - [F,L]
+
+
+# Allow any files or directories that exist to be displayed directly
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-RewriteRule ^(.*)  index.php
-
-#RewriteRule  ^index\/(.*)\/(.*)\/(.*) index.php?do=$1&wt=$2&id=$3
+# Rewrite all other URLs to index.php/
+RewriteRule .*  index.php/$0 [PT,L]
