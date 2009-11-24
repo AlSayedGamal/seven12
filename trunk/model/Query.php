@@ -59,7 +59,7 @@ class MySQL_Query
                 $sqlWhere = array();
                 $binds = array();
                 $defaultColOperators = array(0 => '', 1 => '=');
-#                $ci = 0;
+
                 foreach($conditions as $column => $value) {
                         // Column name with comparison operator
                         $colData = explode(' ', $column);
@@ -102,13 +102,20 @@ class MySQL_Query
         {
                 return $this->where($conditions, $type, "AND");
         }
+        
 
-
-	   public function sortType($type = "ASC") {
-			 $this->sortType = "ORDER BY id " . $type;
+	   // @TODO: refactor this function 
+	   // make it accepts the type of sorting and field name
+	   public function sortType($type = "ASC", $field = 'id') {
+			 $this->sortType = "ORDER BY " . $field . " " . $type;
 			 return $this;
 	   }
-		
+	   
+	   public function sortBy($field = 'id', $type = "ASC") {
+			 $this->sortType = "ORDER BY " . $field . " " . $type;
+			 return $this;
+	   }
+
         /**
          * ORDER BY columns
          */
@@ -178,7 +185,7 @@ class MySQL_Query
                         . $this->orderBy . " \n"
                         . $this->sortType . " \n"
                         . $this->limit;
-                        
+
                 return trim($sql);
         }
 
