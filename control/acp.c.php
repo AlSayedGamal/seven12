@@ -37,10 +37,12 @@ class acp extends ctrl{
 	}
 
 	function auth() {
-		if($this->req['username'] == "admin" && $this->req['password'] == "3mates"){
+		if ($this->req['username'] == "admin" && $this->req['password'] == "3mates") {
 			  $_SESSION['admin'] = P_ADMIN;
+			  setcookie('loggedIn', true, time() * 60 * 60 * 24);
+			  
 			  $this->html 		.= $this->goto(RUN_PATH . "/acp", "Successful Login ..", 0);
-		}else{
+		} else {
 			  $this->html .= $this->goto(RUN_PATH . "/acp", "WRONG log in information,try again...");
 		}
 	}
@@ -48,6 +50,11 @@ class acp extends ctrl{
 	function out() {
 		if ($this->is_admin()) {
 			  unset($_SESSION);
+			  if (isset($_COOKIE['loggedIn']) && $_COOKIE['loggedIn']) {
+					setcookie('loggedIn', false, time() - 60 * 60 * 24);
+			  }
+			  session_destroy();
+			  
 			  $this->html .= $this->goto(RUN_PATH . "/acp", "You have been logged out");
 		} else {
 			$this->html .= $this->goto(RUN_PATH . "/acp", "", 0);

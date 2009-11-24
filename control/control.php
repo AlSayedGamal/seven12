@@ -60,11 +60,12 @@ class ctrl {
 					'seconds' => $seconds
 				);
 		$html = render('.', 'redirect', $data);
+		
 		return $html;
 	}
 
 	function is_admin() {
-		if(isset($_SESSION['admin']) && $_SESSION['admin'] == P_ADMIN){
+		if (isset($_SESSION['admin']) && $_SESSION['admin'] == P_ADMIN) {
 			  return true;
 		}
 		return false;
