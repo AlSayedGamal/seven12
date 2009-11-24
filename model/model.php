@@ -7,9 +7,9 @@ if(!$iWasThere)
 Load()->lib('Exception');
 Load()->model('Mysql');
 
-class Model {
+class Model extends MySQL {
 
-     protected $connection 	= null;
+   	protected $connection 	= null;
 	protected $stmt 		= null;
 	protected $varsBound 	= false;
 
@@ -17,61 +17,84 @@ class Model {
 	#protected $fields;
 	protected $primaryKey	= "";
 	protected $results 		= array();
-     protected $lastInsertID	= "";
+	static $f_results 		= array();
+	public $numRows			= 0;
+   	protected $lastInsertID	= null;
+   	private $startTime;
+   	private $endTime;
 
-     private $debug 		= false;
+   	private $debug 			= false;
 
 	// Array of all queries that have been executed for any DataMapper (static)
 	protected static $queryLog = array();
 
      function __construct() {
-		$this->connection = MySQL::getInstance();
+		$this->connection = $this->getInstance();
+		
+		try {
+			if (!$this->setCharset($this->char_set, $this->dbcollat)) {
+				throw new Seven12_Exception(__METHOD__ . " Error Setting DB char_set ( " .
+					 		$this->connection->connect_errno . " )<pre>" . 
+					 		$this->connection->connect_error . "</pre>");
+			}
+		} catch (Exception $e) {
+			$e->getError();
+			exit;
+		}
      }
 
 	// we need to split this
 	function query($sql, $binds = array()) {
 
+		// Clean previous query
+		self::$f_results = array();
+		
 		// Add query to log
 		$this->logQuery($sql, $binds);
-
-		// prepare query
-		$stmt = $this->connection->prepare($sql);
-
-		if (is_array($binds) && count($binds)) {
-			array_unshift($binds, $this->getPreparedTypeString($binds));
-			// call $stmt->bind_param('', $binds);
-               call_user_func_array(array(&$stmt, 'bind_param'), $binds);
-		}
 
 		if ($this->debug) $this->debug();
 
 		try {
+
+			$this->startTime = microtime(true);
+			// prepare query
+			$stmt = $this->connection->prepare($sql);
+
 		     if (!$stmt) {
 		     	throw new Seven12_Exception("Error Executing Query: " . $this->connection->error);
 		     }
-		     $stmt->execute();
-		} catch (Exception $e) {
-			echo $e->getError();
-			if ($this->debug) exit;
-		}
 
-		try {
-		     if ($stmt->errno) { // results from no binds
+		     if (is_array($binds) && count($binds)) {
+				array_unshift($binds, $this->getPreparedTypeString($binds));
+				// call $stmt->bind_param('', $binds);
+		        call_user_func_array(array(&$stmt, 'bind_param'), $binds);
+			}
+
+
+		    $stmt->execute();
+
+
+		    if ($stmt->errno) { // results from no binds
 		     	throw new Seven12_Exception("---Error Executing Query: " . $stmt->error);
-		     }
+		    }
+
+			if ($this->connection->insert_id) {
+          		$this->lastInsertID = $this->connection->insert_id;
+		    }
+
+		    $stmt->store_result();
+			$this->stmt = $stmt;
+
 		} catch (Exception $e) {
 			echo $e->getError();
 			if ($this->debug) exit;
 		}
 
-          if ($this->connection->insert_id) {
-          	$this->lastInsertID = $this->connection->insert_id;
-          }
 
-          $stmt->store_result();
-		$this->stmt = $stmt;
 
-		$this->clearResults();
+		$this->numRows = $stmt->num_rows;
+
+#		$this->clearResults();
 
 		return $this;
 	}
@@ -106,7 +129,7 @@ class Model {
         //  using a while ($row = $this->stmt->fetch_assoc()) loop the following
         // code is only executed the first time
        # $results = $result = array();
-	   static $results = array();
+	   #static $f_results = array();
 
         if (!$this->varsBound) {
             $meta = $this->stmt->result_metadata();
@@ -115,7 +138,7 @@ class Model {
                 // e.g. "This Column". 'Typer85 at gmail dot com' pointed this out
                 //$columnName = str_replace(' ', '_', $column->name);
 
-                $bindVarArray[] = &$results[$column->name];
+                $bindVarArray[] = &self::$f_results[$column->name];
             }
             call_user_func_array(array($this->stmt, 'bind_result'), $bindVarArray);
             $this->varsBound = true;
@@ -130,7 +153,7 @@ class Model {
             // $results[0], $results[1], etc, were all references and pointed to
             // the last dataset
   //          dump($this->results);
-            foreach ($results as $k => $v) {
+            foreach (self::$f_results as $k => $v) {
                 $result[$k] = $v;
             }
             return $result;
@@ -144,12 +167,16 @@ class Model {
 	// class and assign $row to it in the upper function
 	function fetch() {
 		#$results = array();
+		$this->results = array();
 		while ($row = $this->fetch_assoc()) {
 			// r[] = new Object($row);
 		    	$this->results[] = $row;
 		}
 		$this->stmt->free_result();
 		$this->stmt->close();
+
+		$this->endTime = microtime(true);
+
 
 		return $this->results;
 	}
@@ -185,15 +212,19 @@ class Model {
 
 	public function insert(array $what) {
 		$ret = true;
+		
 		$fields = array_keys($what);
-		$this->params = array_values($what);
-		$q = array_fill(0, count($what), '?');
+		$this->params = array_values($what);		
 
 		if(count($what) > 0) {
 			// build the statement
+			
+			foreach ($fields as $field) {
+				$subQuery[] = $field . " = ?";
+			}
+			
 			$sql = "INSERT INTO " . $this->getTable() .
-				" (" . implode(', ', $fields) . ")" .
-				" VALUES(" . implode(', ', $q) . ")";
+				   " SET " . implode(', ', $subQuery);
 
 			$this->query($sql, $this->getParameters());
 		} else {
@@ -205,19 +236,46 @@ class Model {
 
 	public function update(array $row, $id) {
 		$ret = true;
+		
 		$keys = array_keys($row);
 		$this->params = array_values($row);
-		$this->params['id'] = $id;
+		$this->params[$this->primaryKey] = $id;
 
 		foreach($keys as $key) {
 			$placeholders[] = $key . " = ?";
 		}
 
 		if(count($placeholders) > 0) {
-				// Build the query
+			// Build the query
 			$sql = "UPDATE " . $this->getTable() .
 				" SET " . implode(', ', $placeholders) .
 				" WHERE `" . $this->primaryKey . "` = ?";
+
+			$this->query($sql, $this->getParameters());
+		} else {
+			$ret = false;
+		}
+		return $ret;
+	}
+	
+	public function updateWhere(array $row, $where) {
+		$ret = true;
+		
+		$keys = array_keys($row);
+		$this->params = array_values($row);
+		$whereKeys = array_keys($where);
+		$this->params[$whereKeys[0]] = $where[$whereKeys[0]];
+
+		foreach($keys as $key) {
+			$placeholders[] = $key . " = ?";
+		}
+
+
+		if(count($placeholders) > 0) {
+				// Build the query
+			$sql = "UPDATE " . $this->getTable() .
+				" SET " . implode(', ', $placeholders) .
+				" WHERE `" . $whereKeys[0] . "` = ?";
 
 			$this->query($sql, $this->getParameters());
 		} else {
@@ -275,6 +333,32 @@ class Model {
 		return implode(' AND ', $w);
      }
 
+     function elapsedTime() {
+     	return round($this->endTime - $this->startTime, 4);
+     }
+     
+     function getCount() {
+     	$this->query($this->select('COUNT(*) AS count')->sql());
+     	$result = $this->fetch();
+     	return $result[0]['count'];
+     }
+     
+     function getLimited($limit = null, $offset = null) {
+		if (null !== $limit) {
+			$limit = (int) $limit;			
+		} else {
+			$limit = 20;
+		}
+        
+        if(null !== $offset) {
+            $offset = (int) $offset;
+     	}
+     	
+		$query = $this->select()->limit($limit, $offset);
+		$this->query($query->sql());
+		return $this->fetch();
+	}
+
 
 	/**
 	 * Prints all executed SQL queries - useful for debugging
@@ -315,6 +399,10 @@ class Model {
 	public function getQueryCount()
 	{
 		return count(self::$queryLog);
+	}
+	
+	public function getLastInsertID() {
+		return $this->lastInsertID;
 	}
 }
 ?>

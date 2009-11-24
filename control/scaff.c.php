@@ -14,9 +14,10 @@ Load()->lib('Exception');
 
 class scaff extends ctrl {
 	
-    	private $table;
-    	private $enctype = "";
-    	private $primaryKey;
+	private $table;
+	private $fields = array();
+	private $enctype = "";
+	private $primaryKey;
 
 	function __construct($req) {
 		
@@ -51,8 +52,6 @@ class scaff extends ctrl {
 	    	
 		    if($row['Key'] != "PRI"){
 		    	
-		       $fields_in_set[] = $this->add_to_set($row);
-		       $fields_in_req[] = $this->add_to_req($row);
 		       $fields[]	    = $row['Field'];
 		       $this->check_type($row, $elements);
 			   
@@ -63,21 +62,17 @@ class scaff extends ctrl {
 		    }
 			
 	    }
+	
+		$this->fields = $fields;
      
           // if you want to scaff a model only
          if ($this->req['type'] == "model") {
           	
-          	$this->html .= $this->write_model_file(array(
-													'set'=>$fields_in_set, 
-													'req'=>$fields_in_req
-													));
+          	$this->html .= $this->write_model_file();
 			
          } else {
           	
- 		  	$this->html .= $this->write_model_file(array(
-													'set'=>$fields_in_set, 
-													'req'=>$fields_in_req
-													));
+ 		  	$this->html .= $this->write_model_file();
 		     
 	    	$elements['show']		= $this->create_user_show($fields);
          	$elements['ashow']		= $this->create_admin_show($fields);
@@ -95,13 +90,6 @@ class scaff extends ctrl {
 	}
 	
 
-	function add_to_set($row){
-		return sprintf("'`%s`' => \$req['%s']", $row['Field'], $row['Field']);
-	}
-
-	function add_to_req($row){
-		return $this->add_to_set($row);
-	}
 
 	function create_user_show($fields){
 		
@@ -208,19 +196,18 @@ class scaff extends ctrl {
 	}
 	
 
-	function write_model_file($model_data){
+	function write_model_file(){
 		
 		$model = "./model/{$this->table}.php";
 
-		if(is_file($model) || touch($model))
-		{
+		if (is_file($model) || touch($model)) {
+			
 			  $arData['table'] 			= $this->table;
-			  $arData['primary_key']		= $this->primaryKey;
-			  $arData['updates'] 		= implode(", \n\t\t\t\t\t", $model_data['set']);
-			  $arData['insert_values']	= implode(", \n\t\t\t\t\t", $model_data['req']);
+			  $arData['primary_key']	= $this->primaryKey;
+			  $arData['fields']			= implode(', ', $this->fields);
 
 			  if (file_put_contents($model, render($this->name, 's.model', $arData))) {
-			  	return $this->outMsg("Create Model", "done");
+			  		return $this->outMsg("Create Model", "done");
 			  }
 
 		}
