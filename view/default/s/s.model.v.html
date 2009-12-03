@@ -31,7 +31,9 @@ class {table}_model extends Model {
 	     //array("name" => $req['name'], ...)
 	    
 		foreach ($this->fields as $field) {
-		 	$fields[$field] = $req[$field];
+		 	if (isset($req[$field])) {
+		 		$fields[$field] = $req[$field];
+			}
 		}
     	
 		$this->insert($fields);
@@ -42,7 +44,9 @@ class {table}_model extends Model {
 	    //array("name" => $req['name'], ...)
 		
 	    foreach ($this->fields as $field) {
-		 	$updates[$field] = $req[$field];
+		 	if (isset($req[$field])) {
+		 		$updates[$field] = $req[$field];
+			}
 		}
 		
     	$this->update($updates, $req['id']);
