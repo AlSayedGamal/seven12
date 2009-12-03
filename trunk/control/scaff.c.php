@@ -47,6 +47,8 @@ class scaff extends ctrl {
 
         $qDescribeTable = "describe {$this->table}";
         $result 		  = query($qDescribeTable);
+		
+		$elements = array('add'=> '', 'edit'=>'', 'type'=>'');
 		  
 	    while ($row = mysql_fetch_array($result,MYSQL_ASSOC)) {
 	    	
@@ -66,7 +68,7 @@ class scaff extends ctrl {
 		$this->fields = $fields;
      
           // if you want to scaff a model only
-         if ($this->req['type'] == "model") {
+         if (isset($this->req['type']) and $this->req['type'] == "model") {
           	
           	$this->html .= $this->write_model_file();
 			
@@ -204,7 +206,7 @@ class scaff extends ctrl {
 			
 			  $arData['table'] 			= $this->table;
 			  $arData['primary_key']	= $this->primaryKey;
-			  $arData['fields']			= implode(', ', $this->fields);
+			  $arData['fields']			= "'" . implode("', '", $this->fields) . "'";
 
 			  if (file_put_contents($model, render($this->name, 's.model', $arData))) {
 			  		return $this->outMsg("Create Model", "done");
