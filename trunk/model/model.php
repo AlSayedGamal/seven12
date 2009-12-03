@@ -42,12 +42,21 @@ class Model extends MySQL {
 			exit;
 		}
      }
+	 
+	 function clean() {
+	 	$this->stmt = NULL;
+		$this->varsBound = false;
+		$this->results = NULL;
+		$this->numRows = 0;
+		$this->lastInsertID = NULL;
+		self::$f_results = NULL;
+	 }
 
 	// we need to split this
 	function query($sql, $binds = array()) {
 
 		// Clean previous query
-		self::$f_results = array();
+		$this->clean();
 		
 		// Add query to log
 		$this->logQuery($sql, $binds);
