@@ -159,16 +159,12 @@ class scaff extends ctrl {
 			case 'text':
 				$elements['add'] .= "<label for='{$row['Field']}'>{$label}:</label><br />
 			  		<textarea id='{$row['Field']}'  name='{$row['Field']}'></textarea>
-						<script language=\"javascript1.2\">
-							generate_wysiwyg('{$row['Field']}');
-						</script>
+						
 			  		<br />\n";
 					
 				$elements['edit'] .= "{$label}:<br />
 			  		<textarea id='{$row['Field']}'  name='{$row['Field']}'>{{$row['Field']}}</textarea>
-						<script language=\"javascript1.2\">
-							generate_wysiwyg('{$row['Field']}');
-						</script>
+						
 			  		<br />\n";
 					
 			break;

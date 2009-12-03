@@ -7,12 +7,11 @@
 			<link rel='stylesheet' href='{LINK}/view/default/styles/acp.css' type='text/css' />
 			<script>
 				var LINK = '{LINK}';
-				var VIEW = LINK + '/view/wysiwyg';
 			</script>
 			<script src='{LINK}/view/default/scripts/js.js'></script>
-			<script src='{LINK}/view/default/scripts/wysiwyg.js'></script>
+
 	  </head>
-	  <body style="background: url('{LINK}/view/default/images/bg.png') repeat-x;">
+	  <body onLoad="document.loginform.username.select()" style="background: url('{LINK}/view/default/images/bg.png') repeat-x;">
 			<center>
 				  <div id='header'>
 						{header}
